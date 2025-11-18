@@ -1,10 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as FileSystem from "expo-file-system";
-import { trimVideo } from "expo-trim-video";
 import { VideoThumbnailsResult, getThumbnailAsync } from "expo-video-thumbnails";
 
 import type { Video, VideoCreationData } from "@/types";
 import * as db from "./database";
+// Use mock for Expo Go, real implementation needs development build
+import { trimVideo } from "./video-mock";
 
 /**
  * Query keys for cache management.

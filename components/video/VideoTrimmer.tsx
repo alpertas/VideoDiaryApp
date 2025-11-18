@@ -1,10 +1,10 @@
-import React, { useState, useCallback } from "react";
-import { View, Text, Dimensions } from "react-native";
+import React, { useCallback, useState } from "react";
+import { Dimensions, Text, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
   runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
   withSpring,
 } from "react-native-reanimated";
 import { VideoPlayer } from "./VideoPlayer";
@@ -31,7 +31,9 @@ export function VideoTrimmer({
   onTrimChange,
 }: VideoTrimmerProps) {
   const [startTime, setStartTime] = useState(0);
-  const [endTime, setEndTime] = useState(Math.min(TRIM_DURATION, videoDuration));
+  const [endTime, setEndTime] = useState(
+    Math.min(TRIM_DURATION, videoDuration)
+  );
 
   // Shared values for animated positions
   const startPosition = useSharedValue(0);
@@ -61,11 +63,11 @@ export function VideoTrimmer({
         0,
         Math.min(event.translationX + startPosition.value, TIMELINE_WIDTH - 50)
       );
-      
+
       // Ensure 5-second constraint
       const newStartTime = positionToTime(newPosition);
       const maxStartTime = videoDuration - TRIM_DURATION;
-      
+
       if (newStartTime <= maxStartTime) {
         startPosition.value = newPosition;
       }
@@ -73,15 +75,19 @@ export function VideoTrimmer({
     .onEnd(() => {
       const newStartTime = positionToTime(startPosition.value);
       const newEndTime = newStartTime + TRIM_DURATION;
-      
+
       // Adjust if exceeds video duration
       if (newEndTime > videoDuration) {
         const adjustedStart = videoDuration - TRIM_DURATION;
-        startPosition.value = withSpring((adjustedStart / videoDuration) * TIMELINE_WIDTH);
+        startPosition.value = withSpring(
+          (adjustedStart / videoDuration) * TIMELINE_WIDTH
+        );
         endPosition.value = withSpring(TIMELINE_WIDTH);
         runOnJS(updateTrimRange)(adjustedStart, videoDuration);
       } else {
-        endPosition.value = withSpring((newEndTime / videoDuration) * TIMELINE_WIDTH);
+        endPosition.value = withSpring(
+          (newEndTime / videoDuration) * TIMELINE_WIDTH
+        );
         runOnJS(updateTrimRange)(newStartTime, newEndTime);
       }
     });
@@ -93,11 +99,11 @@ export function VideoTrimmer({
         50,
         Math.min(event.translationX + endPosition.value, TIMELINE_WIDTH)
       );
-      
+
       // Ensure 5-second constraint
       const newEndTime = positionToTime(newPosition);
       const minEndTime = TRIM_DURATION;
-      
+
       if (newEndTime >= minEndTime) {
         endPosition.value = newPosition;
       }
@@ -105,14 +111,18 @@ export function VideoTrimmer({
     .onEnd(() => {
       const newEndTime = positionToTime(endPosition.value);
       const newStartTime = newEndTime - TRIM_DURATION;
-      
+
       // Adjust if goes below 0
       if (newStartTime < 0) {
         startPosition.value = withSpring(0);
-        endPosition.value = withSpring((TRIM_DURATION / videoDuration) * TIMELINE_WIDTH);
+        endPosition.value = withSpring(
+          (TRIM_DURATION / videoDuration) * TIMELINE_WIDTH
+        );
         runOnJS(updateTrimRange)(0, TRIM_DURATION);
       } else {
-        startPosition.value = withSpring((newStartTime / videoDuration) * TIMELINE_WIDTH);
+        startPosition.value = withSpring(
+          (newStartTime / videoDuration) * TIMELINE_WIDTH
+        );
         runOnJS(updateTrimRange)(newStartTime, newEndTime);
       }
     });
@@ -181,4 +191,3 @@ export function VideoTrimmer({
     </View>
   );
 }
-
