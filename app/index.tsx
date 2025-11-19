@@ -2,19 +2,20 @@ import { Ionicons } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
-import React from "react";
-import {
-  ActivityIndicator,
-  Alert,
-  Pressable,
-  Text,
-  View
-} from "react-native";
+import React, { useEffect } from "react";
+import { ActivityIndicator, Alert, Pressable, Text, View } from "react-native";
 import {
   GestureHandlerRootView,
   Swipeable,
 } from "react-native-gesture-handler";
-import Animated, { FadeInDown } from "react-native-reanimated";
+import Animated, {
+  FadeInDown,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withSequence,
+  withTiming,
+} from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { VideoListItem } from "@/components/video/VideoListItem";
@@ -29,6 +30,24 @@ export default function MainScreen() {
   const router = useRouter();
   const { data: videos, isLoading } = useVideosQuery();
   const deleteVideoMutation = useDeleteVideoMutation();
+
+  // FAB pulsating animation
+  const fabScale = useSharedValue(1);
+
+  useEffect(() => {
+    fabScale.value = withRepeat(
+      withSequence(
+        withTiming(1.1, { duration: 2500 }),
+        withTiming(1, { duration: 2500 })
+      ),
+      -1,
+      false
+    );
+  }, []);
+
+  const fabAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: fabScale.value }],
+  }));
 
   const handleVideoPress = (videoId: number) => {
     router.push(`/videos/${videoId}`);
@@ -167,25 +186,36 @@ export default function MainScreen() {
         <FlashList
           data={videos}
           renderItem={renderItem}
-          estimatedItemSize={132}
+          estimatedItemSize={140}
           keyExtractor={(item) => item.id.toString()}
           contentContainerStyle={{ paddingTop: 12, paddingBottom: 100 }}
         />
 
         {/* Floating Action Button */}
-        <Pressable
-          onPress={handleAddVideo}
-          className="absolute bottom-6 right-6 bg-blue-600 w-14 h-14 rounded-full items-center justify-center active:scale-95"
-          style={{
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.3,
-            shadowRadius: 8,
-            elevation: 8,
-          }}
+        <Animated.View
+          style={[
+            fabAnimatedStyle,
+            {
+              position: "absolute",
+              bottom: 24,
+              right: 24,
+            },
+          ]}
         >
-          <Ionicons name="add" size={32} color="white" />
-        </Pressable>
+          <Pressable
+            onPress={handleAddVideo}
+            className="bg-blue-600 w-14 h-14 rounded-full items-center justify-center active:scale-95"
+            style={{
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: 0.3,
+              shadowRadius: 8,
+              elevation: 8,
+            }}
+          >
+            <Ionicons name="add" size={32} color="white" />
+          </Pressable>
+        </Animated.View>
       </SafeAreaView>
     </GestureHandlerRootView>
   );
