@@ -46,28 +46,33 @@ export function VideoPlayer({
   // Sync playing state with player status and handle segment playback
   useEffect(() => {
     if (player) {
-      const playingSubscription = player.addListener("playingChange", (newState) => {
-        setIsPlaying(newState.isPlaying);
-      });
+      const playingSubscription = player.addListener(
+        "playingChange",
+        (newState) => {
+          setIsPlaying(newState.isPlaying);
+        }
+      );
 
-      // Handle segment end time
-      let timeUpdateSubscription: any;
-      if (endTime !== undefined) {
-        timeUpdateSubscription = player.addListener("timeUpdate", (status) => {
-          const currentTimeMs = status.currentTime * 1000;
-          if (currentTimeMs >= endTime && player.playing) {
-            player.pause();
-            if (startTime !== undefined) {
+      // Handle segment end time with setInterval (timeUpdate event doesn't fire reliably)
+      let intervalId: NodeJS.Timeout | null = null;
+      if (endTime !== undefined && startTime !== undefined) {
+        intervalId = setInterval(() => {
+          if (player && player.playing) {
+            const currentTimeMs = player.currentTime * 1000;
+            // Use 100ms lookahead to catch end time before it's passed
+            if (currentTimeMs >= endTime - 100) {
+              // IMPORTANT: Reset position BEFORE pausing to avoid getting stuck
               player.currentTime = startTime / 1000;
+              player.pause();
             }
           }
-        });
+        }, 100); // Check every 100ms
       }
 
       return () => {
         playingSubscription.remove();
-        if (timeUpdateSubscription) {
-          timeUpdateSubscription.remove();
+        if (intervalId) {
+          clearInterval(intervalId);
         }
       };
     }
@@ -102,6 +107,14 @@ export function VideoPlayer({
       if (isPlaying) {
         player.pause();
       } else {
+        // If at end position, restart from beginning of trimmed segment
+        if (endTime !== undefined && startTime !== undefined) {
+          const currentTimeMs = player.currentTime * 1000;
+          // Check if video is at or very close to end time (within 100ms)
+          if (Math.abs(currentTimeMs - endTime) < 100) {
+            player.currentTime = startTime / 1000;
+          }
+        }
         player.play();
       }
     }

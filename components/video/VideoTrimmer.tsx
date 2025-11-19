@@ -17,6 +17,8 @@ interface VideoTrimmerProps {
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const TIMELINE_PADDING = 40;
 const TIMELINE_WIDTH = SCREEN_WIDTH - TIMELINE_PADDING * 2;
+const HANDLE_WIDTH = 40;
+const USABLE_TIMELINE_WIDTH = TIMELINE_WIDTH - HANDLE_WIDTH;
 const MIN_DURATION = 1000; // 1 second in milliseconds
 const MAX_DURATION = 5000; // 5 seconds in milliseconds
 
@@ -33,20 +35,27 @@ export function VideoTrimmer({
   const [startTime, setStartTime] = useState(0);
   const [endTime, setEndTime] = useState(Math.min(MAX_DURATION, videoDuration));
 
+  // Convert time to position
+  const timeToPosition = (time: number): number => {
+    return (time / videoDuration) * USABLE_TIMELINE_WIDTH;
+  };
+
   // Shared values for animated positions
-  const startPosition = useSharedValue(0);
+  const startPosition = useSharedValue(HANDLE_WIDTH / 2);
   const endPosition = useSharedValue(
-    (Math.min(MAX_DURATION, videoDuration) / videoDuration) * TIMELINE_WIDTH
+    timeToPosition(Math.min(MAX_DURATION, videoDuration)) + HANDLE_WIDTH / 2
   );
-  const savedStart = useSharedValue(0);
+  const savedStart = useSharedValue(HANDLE_WIDTH / 2);
   const savedEnd = useSharedValue(
-    (Math.min(MAX_DURATION, videoDuration) / videoDuration) * TIMELINE_WIDTH
+    timeToPosition(Math.min(MAX_DURATION, videoDuration)) + HANDLE_WIDTH / 2
   );
 
   // Convert position to time
   const positionToTime = (position: number): number => {
     "worklet";
-    return (position / TIMELINE_WIDTH) * videoDuration;
+    return (
+      ((position - HANDLE_WIDTH / 2) / USABLE_TIMELINE_WIDTH) * videoDuration
+    );
   };
 
   // Update trim range
@@ -68,10 +77,16 @@ export function VideoTrimmer({
     })
     .onUpdate((event) => {
       "worklet";
+      const minStartPosition = Math.max(
+        HANDLE_WIDTH / 2,
+        endPosition.value -
+          (MAX_DURATION / videoDuration) * USABLE_TIMELINE_WIDTH
+      );
       const maxStartPosition =
-        endPosition.value - (MIN_DURATION / videoDuration) * TIMELINE_WIDTH;
+        endPosition.value -
+        (MIN_DURATION / videoDuration) * USABLE_TIMELINE_WIDTH;
       const newPosition = Math.max(
-        0,
+        minStartPosition,
         Math.min(savedStart.value + event.translationX, maxStartPosition)
       );
       startPosition.value = newPosition;
@@ -95,10 +110,12 @@ export function VideoTrimmer({
     .onUpdate((event) => {
       "worklet";
       const minEndPosition =
-        startPosition.value + (MIN_DURATION / videoDuration) * TIMELINE_WIDTH;
+        startPosition.value +
+        (MIN_DURATION / videoDuration) * USABLE_TIMELINE_WIDTH;
       const maxEndPosition = Math.min(
-        TIMELINE_WIDTH,
-        startPosition.value + (MAX_DURATION / videoDuration) * TIMELINE_WIDTH
+        USABLE_TIMELINE_WIDTH + HANDLE_WIDTH / 2,
+        startPosition.value +
+          (MAX_DURATION / videoDuration) * USABLE_TIMELINE_WIDTH
       );
       const newPosition = Math.max(
         minEndPosition,
@@ -128,10 +145,10 @@ export function VideoTrimmer({
       let newStart = savedStart.value + event.translationX;
 
       // Constrain to bounds
-      newStart = Math.max(
-        0,
-        Math.min(newStart, TIMELINE_WIDTH - selectionWidth)
-      );
+      const minStart = HANDLE_WIDTH / 2;
+      const maxStart =
+        USABLE_TIMELINE_WIDTH + HANDLE_WIDTH / 2 - selectionWidth;
+      newStart = Math.max(minStart, Math.min(newStart, maxStart));
 
       startPosition.value = newStart;
       endPosition.value = newStart + selectionWidth;
@@ -146,15 +163,15 @@ export function VideoTrimmer({
     });
 
   const startHandleStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: startPosition.value }],
+    transform: [{ translateX: startPosition.value - HANDLE_WIDTH / 2 }],
   }));
 
   const endHandleStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: endPosition.value }],
+    transform: [{ translateX: endPosition.value - HANDLE_WIDTH / 2 }],
   }));
 
   const selectionStyle = useAnimatedStyle(() => ({
-    left: startPosition.value,
+    left: startPosition.value - HANDLE_WIDTH / 2,
     width: endPosition.value - startPosition.value,
   }));
 
@@ -202,9 +219,10 @@ export function VideoTrimmer({
                 startHandleStyle,
                 {
                   position: "absolute",
+                  left: 0,
                   top: -8,
                   bottom: -8,
-                  width: 40,
+                  width: HANDLE_WIDTH,
                   backgroundColor: "#3B82F6",
                   borderRadius: 8,
                   alignItems: "center",
@@ -236,9 +254,10 @@ export function VideoTrimmer({
                 endHandleStyle,
                 {
                   position: "absolute",
+                  left: 0,
                   top: -8,
                   bottom: -8,
-                  width: 40,
+                  width: HANDLE_WIDTH,
                   backgroundColor: "#3B82F6",
                   borderRadius: 8,
                   alignItems: "center",
