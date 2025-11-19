@@ -90,10 +90,10 @@ export default function MainScreen() {
 
   const renderRightActions = (video: Video) => {
     return (
-      <View className="flex-row h-full">
+      <View className="flex-row">
         <Pressable
           onPress={() => handleEdit(video.id)}
-          className="bg-blue-500 justify-center items-center w-20 active:bg-blue-600"
+          className="bg-blue-500 justify-center items-center w-24 rounded-l-lg active:bg-blue-600"
           style={{ height: "100%" }}
         >
           <Ionicons name="pencil" size={20} color="white" />
@@ -101,7 +101,7 @@ export default function MainScreen() {
         </Pressable>
         <Pressable
           onPress={() => handleDelete(video)}
-          className="bg-red-500 justify-center items-center w-20 active:bg-red-600"
+          className="bg-red-500 justify-center items-center w-24 rounded-r-lg active:bg-red-600"
           style={{ height: "100%" }}
         >
           <Ionicons name="trash" size={20} color="white" />
@@ -112,7 +112,10 @@ export default function MainScreen() {
   };
 
   const renderItem = ({ item, index }: { item: Video; index: number }) => (
-    <Animated.View entering={FadeInDown.delay(index * 50)}>
+    <Animated.View
+      entering={FadeInDown.delay(index * 50)}
+      style={{ marginBottom: 16, marginHorizontal: 16 }}
+    >
       <Swipeable
         renderRightActions={() => renderRightActions(item)}
         overshootRight={false}

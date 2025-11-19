@@ -1,5 +1,4 @@
 import { Video } from "@/types";
-import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import React from "react";
 import { Pressable, Text, View } from "react-native";
@@ -24,21 +23,14 @@ export function VideoListItem({ video, onPress }: VideoListItemProps) {
   return (
     <Pressable
       onPress={onPress}
-      className="flex-row bg-white dark:bg-gray-800 p-3 mb-4 mx-4 shadow-sm active:opacity-80"
+      className="flex-row bg-white dark:bg-gray-800 p-3 rounded-lg shadow-sm active:opacity-80"
     >
-      {/* Thumbnail with Play Icon Overlay */}
-      <View className="relative">
-        <Image
-          source={{ uri: video.thumbnailUri }}
-          className="w-24 h-24 rounded-xl border-2 border-gray-200/50 dark:border-gray-600/50 bg-gray-200 dark:bg-gray-700"
-          contentFit="cover"
-        />
-        <View className="absolute inset-0 items-center justify-center">
-          <View className="bg-black/40 rounded-full p-2">
-            <Ionicons name="play" size={24} color="white" />
-          </View>
-        </View>
-      </View>
+      {/* Thumbnail */}
+      <Image
+        source={{ uri: video.thumbnailUri }}
+        className="w-24 h-24 rounded-xl border-2 border-gray-200/50 dark:border-gray-600/50 bg-gray-200 dark:bg-gray-700"
+        contentFit="cover"
+      />
 
       {/* Metadata */}
       <View className="flex-1 ml-3 justify-center">
