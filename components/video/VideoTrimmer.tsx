@@ -5,7 +5,6 @@ import Animated, {
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
-  withSpring,
 } from "react-native-reanimated";
 import { VideoPlayer } from "./VideoPlayer";
 
@@ -40,9 +39,14 @@ export function VideoTrimmer({
   const endPosition = useSharedValue(
     (Math.min(TRIM_DURATION, videoDuration) / videoDuration) * TIMELINE_WIDTH
   );
+  const savedStart = useSharedValue(0);
+  const savedEnd = useSharedValue(
+    (Math.min(TRIM_DURATION, videoDuration) / videoDuration) * TIMELINE_WIDTH
+  );
 
   // Convert position to time
   const positionToTime = (position: number): number => {
+    "worklet";
     return (position / TIMELINE_WIDTH) * videoDuration;
   };
 
@@ -56,75 +60,59 @@ export function VideoTrimmer({
     [onTrimChange]
   );
 
-  // Start handle gesture
+  // Start handle gesture - moves both handles together maintaining 5s duration
   const startHandleGesture = Gesture.Pan()
+    .onBegin(() => {
+      "worklet";
+      savedStart.value = startPosition.value;
+      savedEnd.value = endPosition.value;
+    })
     .onUpdate((event) => {
-      const newPosition = Math.max(
+      ("worklet");
+      const trimWidth = (TRIM_DURATION / videoDuration) * TIMELINE_WIDTH;
+      const maxStartPosition = TIMELINE_WIDTH - trimWidth;
+      const newStartPosition = Math.max(
         0,
-        Math.min(event.translationX + startPosition.value, TIMELINE_WIDTH - 50)
+        Math.min(savedStart.value + event.translationX, maxStartPosition)
       );
-
-      // Ensure 5-second constraint
-      const newStartTime = positionToTime(newPosition);
-      const maxStartTime = videoDuration - TRIM_DURATION;
-
-      if (newStartTime <= maxStartTime) {
-        startPosition.value = newPosition;
-      }
+      // Keep 5-second duration by moving both handles together
+      startPosition.value = newStartPosition;
+      endPosition.value = newStartPosition + trimWidth;
     })
     .onEnd(() => {
+      "worklet";
       const newStartTime = positionToTime(startPosition.value);
       const newEndTime = newStartTime + TRIM_DURATION;
-
-      // Adjust if exceeds video duration
-      if (newEndTime > videoDuration) {
-        const adjustedStart = videoDuration - TRIM_DURATION;
-        startPosition.value = withSpring(
-          (adjustedStart / videoDuration) * TIMELINE_WIDTH
-        );
-        endPosition.value = withSpring(TIMELINE_WIDTH);
-        runOnJS(updateTrimRange)(adjustedStart, videoDuration);
-      } else {
-        endPosition.value = withSpring(
-          (newEndTime / videoDuration) * TIMELINE_WIDTH
-        );
-        runOnJS(updateTrimRange)(newStartTime, newEndTime);
-      }
+      runOnJS(updateTrimRange)(newStartTime, newEndTime);
+      savedStart.value = startPosition.value;
+      savedEnd.value = endPosition.value;
     });
 
-  // End handle gesture
+  // End handle gesture - moves both handles together maintaining 5s duration
   const endHandleGesture = Gesture.Pan()
+    .onBegin(() => {
+      "worklet";
+      savedStart.value = startPosition.value;
+      savedEnd.value = endPosition.value;
+    })
     .onUpdate((event) => {
-      const newPosition = Math.max(
-        50,
-        Math.min(event.translationX + endPosition.value, TIMELINE_WIDTH)
+      ("worklet");
+      const trimWidth = (TRIM_DURATION / videoDuration) * TIMELINE_WIDTH;
+      const newEndPosition = Math.max(
+        trimWidth,
+        Math.min(savedEnd.value + event.translationX, TIMELINE_WIDTH)
       );
-
-      // Ensure 5-second constraint
-      const newEndTime = positionToTime(newPosition);
-      const minEndTime = TRIM_DURATION;
-
-      if (newEndTime >= minEndTime) {
-        endPosition.value = newPosition;
-      }
+      // Keep 5-second duration by moving both handles together
+      endPosition.value = newEndPosition;
+      startPosition.value = newEndPosition - trimWidth;
     })
     .onEnd(() => {
+      "worklet";
       const newEndTime = positionToTime(endPosition.value);
       const newStartTime = newEndTime - TRIM_DURATION;
-
-      // Adjust if goes below 0
-      if (newStartTime < 0) {
-        startPosition.value = withSpring(0);
-        endPosition.value = withSpring(
-          (TRIM_DURATION / videoDuration) * TIMELINE_WIDTH
-        );
-        runOnJS(updateTrimRange)(0, TRIM_DURATION);
-      } else {
-        startPosition.value = withSpring(
-          (newStartTime / videoDuration) * TIMELINE_WIDTH
-        );
-        runOnJS(updateTrimRange)(newStartTime, newEndTime);
-      }
+      runOnJS(updateTrimRange)(newStartTime, newEndTime);
+      savedStart.value = startPosition.value;
+      savedEnd.value = endPosition.value;
     });
 
   const startHandleStyle = useAnimatedStyle(() => ({
@@ -143,34 +131,103 @@ export function VideoTrimmer({
   return (
     <View className="w-full">
       {/* Video Preview */}
-      <VideoPlayer uri={videoUri} className="w-full h-64 bg-black rounded-lg" />
+      <VideoPlayer
+        uri={videoUri}
+        className="w-full h-64 bg-black rounded-lg mb-4"
+        autoPlay={false}
+      />
 
-      {/* Timeline */}
-      <View className="mt-6 px-10">
-        <View className="relative h-16 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden">
+      {/* Timeline with Draggable Handles */}
+      <View className="mt-2 px-10">
+        <Text className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">
+          Drag handles to select 5-second segment
+        </Text>
+
+        <View
+          className="relative h-16 bg-gray-200 dark:bg-gray-700 rounded-lg"
+          style={{ overflow: "visible" }}
+        >
           {/* Selected Region Highlight */}
           <Animated.View
-            style={selectionStyle}
-            className="absolute top-0 bottom-0 bg-blue-500/30 border-l-2 border-r-2 border-blue-500"
+            style={[
+              selectionStyle,
+              {
+                position: "absolute",
+                top: 0,
+                bottom: 0,
+                backgroundColor: "rgba(59, 130, 246, 0.3)",
+                borderLeftWidth: 2,
+                borderRightWidth: 2,
+                borderColor: "#3B82F6",
+              },
+            ]}
           />
 
           {/* Start Handle */}
           <GestureDetector gesture={startHandleGesture}>
             <Animated.View
-              style={startHandleStyle}
-              className="absolute top-0 bottom-0 w-6 bg-blue-600 items-center justify-center"
+              style={[
+                startHandleStyle,
+                {
+                  position: "absolute",
+                  top: -8,
+                  bottom: -8,
+                  width: 40,
+                  backgroundColor: "#3B82F6",
+                  borderRadius: 8,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  zIndex: 10,
+                  shadowColor: "#000",
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.3,
+                  shadowRadius: 4,
+                  elevation: 5,
+                },
+              ]}
             >
-              <View className="w-1 h-8 bg-white rounded-full" />
+              <View
+                style={{
+                  width: 4,
+                  height: 40,
+                  backgroundColor: "#FFFFFF",
+                  borderRadius: 2,
+                }}
+              />
             </Animated.View>
           </GestureDetector>
 
           {/* End Handle */}
           <GestureDetector gesture={endHandleGesture}>
             <Animated.View
-              style={endHandleStyle}
-              className="absolute top-0 bottom-0 w-6 bg-blue-600 items-center justify-center"
+              style={[
+                endHandleStyle,
+                {
+                  position: "absolute",
+                  top: -8,
+                  bottom: -8,
+                  width: 40,
+                  backgroundColor: "#3B82F6",
+                  borderRadius: 8,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  zIndex: 10,
+                  shadowColor: "#000",
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.3,
+                  shadowRadius: 4,
+                  elevation: 5,
+                },
+              ]}
             >
-              <View className="w-1 h-8 bg-white rounded-full" />
+              <View
+                style={{
+                  width: 4,
+                  height: 40,
+                  backgroundColor: "#FFFFFF",
+                  borderRadius: 2,
+                }}
+              />
             </Animated.View>
           </GestureDetector>
         </View>
@@ -178,13 +235,13 @@ export function VideoTrimmer({
         {/* Time Display */}
         <View className="flex-row justify-between mt-3">
           <Text className="text-sm text-gray-600 dark:text-gray-400">
-            {(startTime / 1000).toFixed(1)}s
+            Start: {(startTime / 1000).toFixed(1)}s
           </Text>
           <Text className="text-sm font-semibold text-blue-600">
-            5.0s selected
+            Duration: 5.0s
           </Text>
           <Text className="text-sm text-gray-600 dark:text-gray-400">
-            {(endTime / 1000).toFixed(1)}s
+            End: {(endTime / 1000).toFixed(1)}s
           </Text>
         </View>
       </View>

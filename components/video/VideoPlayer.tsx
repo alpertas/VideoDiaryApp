@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
-import { View, Pressable } from "react-native";
-import { VideoView, useVideoPlayer } from "expo-video";
 import { Ionicons } from "@expo/vector-icons";
+import { VideoView, useVideoPlayer } from "expo-video";
+import React, { useEffect, useState } from "react";
+import { Pressable, View } from "react-native";
 
 interface VideoPlayerProps {
   uri: string;
@@ -20,11 +20,17 @@ export function VideoPlayer({
   className = "",
 }: VideoPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(autoPlay);
+
+  // Safely initialize player with error handling
   const player = useVideoPlayer(uri, (player) => {
-    player.loop = false;
-    player.muted = false;
-    if (autoPlay) {
-      player.play();
+    try {
+      player.loop = false;
+      player.muted = false;
+      if (autoPlay) {
+        player.play();
+      }
+    } catch (error) {
+      console.error("VideoPlayer error:", error);
     }
   });
 
@@ -38,6 +44,19 @@ export function VideoPlayer({
     }
   }, [player]);
 
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      try {
+        if (player && player.playing) {
+          player.pause();
+        }
+      } catch (error) {
+        // Silently ignore cleanup errors
+      }
+    };
+  }, [player]);
+
   const togglePlayPause = () => {
     if (player) {
       if (isPlaying) {
@@ -49,14 +68,17 @@ export function VideoPlayer({
   };
 
   return (
-    <View className={`relative ${className}`}>
+    <View
+      className={`relative ${className}`}
+      style={{ backgroundColor: "#000" }}
+    >
       <VideoView
         player={player}
-        className="w-full h-full"
-        contentFit="contain"
+        style={{ width: "100%", height: "100%" }}
+        contentFit="cover"
         nativeControls={false}
       />
-      
+
       {/* Play/Pause Overlay Button */}
       <Pressable
         onPress={togglePlayPause}
@@ -71,4 +93,3 @@ export function VideoPlayer({
     </View>
   );
 }
-

@@ -1,6 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import * as FileSystem from "expo-file-system";
-import { VideoThumbnailsResult, getThumbnailAsync } from "expo-video-thumbnails";
+import { File, Paths } from "expo-file-system";
+import {
+  VideoThumbnailsResult,
+  getThumbnailAsync,
+} from "expo-video-thumbnails";
 
 import type { Video, VideoCreationData } from "@/types";
 import * as db from "./database";
@@ -39,14 +42,14 @@ export function useVideoQuery(id: number) {
 
 /**
  * Add a new video diary entry.
- * 
+ *
  * This is the CRITICAL mutation that handles the complete video creation flow:
  * 1. Trim the video to the selected 5-second segment
  * 2. Generate a thumbnail image for list performance
  * 3. Move both files from CacheDirectory to DocumentDirectory (persistence)
  * 4. Insert metadata into SQLite
  * 5. Invalidate the videos query to refresh the list
- * 
+ *
  * Why Tanstack Query?
  * - Provides loading/error states automatically
  * - Handles optimistic updates and rollbacks
@@ -59,6 +62,13 @@ export function useAddVideoMutation() {
   return useMutation({
     mutationFn: async (data: VideoCreationData) => {
       // Step 1: Trim the video to selected segment
+      console.log("✂️ Trimming video:", {
+        source: data.sourceUri,
+        start: `${(data.startTime / 1000).toFixed(1)}s`,
+        end: `${(data.endTime / 1000).toFixed(1)}s`,
+        duration: `${((data.endTime - data.startTime) / 1000).toFixed(1)}s`,
+      });
+
       const trimResult = await trimVideo({
         videoUri: data.sourceUri,
         startMs: data.startTime,
@@ -68,6 +78,8 @@ export function useAddVideoMutation() {
       if (!trimResult || !trimResult.videoUri) {
         throw new Error("Video trimming failed");
       }
+
+      console.log("✅ Video trimmed:", trimResult.videoUri);
 
       // Step 2: Generate thumbnail from the trimmed video
       let thumbnailResult: VideoThumbnailsResult;
@@ -84,18 +96,20 @@ export function useAddVideoMutation() {
       const videoFileName = `video_${Date.now()}.mp4`;
       const thumbnailFileName = `thumb_${Date.now()}.jpg`;
 
-      const persistentVideoUri = `${FileSystem.documentDirectory}${videoFileName}`;
-      const persistentThumbnailUri = `${FileSystem.documentDirectory}${thumbnailFileName}`;
+      const trimmedVideoFile = new File(trimResult.videoUri);
+      const thumbnailFile = new File(thumbnailResult.uri);
 
-      await FileSystem.moveAsync({
-        from: trimResult.videoUri,
-        to: persistentVideoUri,
-      });
+      const persistentVideoFile = new File(Paths.document, videoFileName);
+      const persistentThumbnailFile = new File(
+        Paths.document,
+        thumbnailFileName
+      );
 
-      await FileSystem.moveAsync({
-        from: thumbnailResult.uri,
-        to: persistentThumbnailUri,
-      });
+      trimmedVideoFile.move(persistentVideoFile);
+      thumbnailFile.move(persistentThumbnailFile);
+
+      const persistentVideoUri = persistentVideoFile.uri;
+      const persistentThumbnailUri = persistentThumbnailFile.uri;
 
       // Step 4: Insert into SQLite with persistent URIs
       const videoId = await db.insertVideo({
@@ -148,7 +162,7 @@ export function useUpdateVideoMutation() {
 
 /**
  * Delete a video entry from the database.
- * 
+ *
  * Note: This also attempts to delete the physical files.
  * If file deletion fails, the database entry is still removed.
  */
@@ -159,8 +173,11 @@ export function useDeleteVideoMutation() {
     mutationFn: async (video: Video) => {
       // Attempt to delete physical files (best effort)
       try {
-        await FileSystem.deleteAsync(video.uri, { idempotent: true });
-        await FileSystem.deleteAsync(video.thumbnailUri, { idempotent: true });
+        const videoFile = new File(video.uri);
+        const thumbnailFile = new File(video.thumbnailUri);
+
+        if (videoFile.exists) videoFile.delete();
+        if (thumbnailFile.exists) thumbnailFile.delete();
       } catch {
         console.warn("Failed to delete video files");
         // Continue with database deletion even if file deletion fails
