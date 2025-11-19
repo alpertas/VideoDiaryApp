@@ -11,10 +11,12 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "NSCameraUsageDescription": "This app requires access to the camera to record video diaries.",
-        "NSMicrophoneUsageDescription": "This app requires access to the microphone to record video diaries.",
-        "NSPhotoLibraryUsageDescription": "This app requires access to your photo library to select and save video diaries."
-      }
+        "NSCameraUsageDescription": "Video Diary needs camera access to record your video memories.",
+        "NSMicrophoneUsageDescription": "Video Diary needs microphone access to record audio with your videos.",
+        "NSPhotoLibraryUsageDescription": "Video Diary needs access to your photo library to save and select videos for your diary entries.",
+        "ITSAppUsesNonExemptEncryption": false
+      },
+      "bundleIdentifier": "com.alpertas.VideoDiary"
     },
     "android": {
       "adaptiveIcon": {
@@ -31,7 +33,8 @@
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
         "android.permission.READ_MEDIA_VIDEO"
-      ]
+      ],
+      "package": "com.alpertas.VideoDiary"
     },
     "web": {
       "bundler": "metro",
@@ -57,14 +60,20 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "This app requires access to your photo library to select video diaries.",
-          "cameraPermission": "This app requires access to the camera to record video diaries."
+          "photosPermission": "Video Diary needs access to your photo library to select videos for your diary entries.",
+          "cameraPermission": "Video Diary needs camera access to record video memories."
         }
       ]
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "cefeb260-ed9f-4215-b908-7bcfab14ada1"
+      }
     }
   }
 }
