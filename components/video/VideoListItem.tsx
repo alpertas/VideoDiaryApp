@@ -23,7 +23,7 @@ export function VideoListItem({ video, onPress }: VideoListItemProps) {
   return (
     <Pressable
       onPress={onPress}
-      className="flex-row bg-white dark:bg-gray-800 rounded-lg p-3 mb-3 mx-4 shadow-sm active:opacity-80"
+      className="flex-row bg-white dark:bg-gray-800 p-3 mb-3 mx-4 shadow-sm active:opacity-80"
     >
       {/* Thumbnail - Static Image for Performance */}
       <Image

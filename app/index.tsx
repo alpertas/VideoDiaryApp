@@ -1,9 +1,15 @@
 import { Ionicons } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
-import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
+import { useRouter } from "expo-router";
 import React from "react";
-import { ActivityIndicator, Alert, Platform, Pressable, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Alert,
+  Pressable,
+  Text,
+  View
+} from "react-native";
 import {
   GestureHandlerRootView,
   Swipeable,
@@ -33,6 +39,7 @@ export default function MainScreen() {
   };
 
   const handleDelete = (video: Video) => {
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
     Alert.alert(
       "Delete Video",
       `Are you sure you want to delete "${video.name}"?`,
@@ -42,6 +49,7 @@ export default function MainScreen() {
           text: "Delete",
           style: "destructive",
           onPress: () => {
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
             deleteVideoMutation.mutate(video, {
               onSuccess: () => {
                 Alert.alert("Success", "Video deleted successfully");
@@ -57,33 +65,40 @@ export default function MainScreen() {
   };
 
   const handleEdit = (videoId: number) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     router.push(`/edit/${videoId}`);
   };
 
-  const renderRightActions = (video: Video) => (
-    <View className="flex-row">
-      <Pressable
-        onPress={() => handleEdit(video.id)}
-        className="bg-blue-600 justify-center items-center w-20 mx-1 rounded-lg active:opacity-80"
-      >
-        <Ionicons name="pencil" size={24} color="white" />
-        <Text className="text-white text-xs mt-1">Edit</Text>
-      </Pressable>
-      <Pressable
-        onPress={() => handleDelete(video)}
-        className="bg-red-600 justify-center items-center w-20 mx-1 rounded-lg active:opacity-80"
-      >
-        <Ionicons name="trash" size={24} color="white" />
-        <Text className="text-white text-xs mt-1">Delete</Text>
-      </Pressable>
-    </View>
-  );
+  const renderRightActions = (video: Video) => {
+    return (
+      <View className="flex-row h-full">
+        <Pressable
+          onPress={() => handleEdit(video.id)}
+          className="bg-blue-500 justify-center items-center w-20 active:bg-blue-600"
+          style={{ height: "100%" }}
+        >
+          <Ionicons name="pencil" size={20} color="white" />
+          <Text className="text-white text-xs font-medium mt-1">Edit</Text>
+        </Pressable>
+        <Pressable
+          onPress={() => handleDelete(video)}
+          className="bg-red-500 justify-center items-center w-20 active:bg-red-600"
+          style={{ height: "100%" }}
+        >
+          <Ionicons name="trash" size={20} color="white" />
+          <Text className="text-white text-xs font-medium mt-1">Delete</Text>
+        </Pressable>
+      </View>
+    );
+  };
 
   const renderItem = ({ item, index }: { item: Video; index: number }) => (
     <Animated.View entering={FadeInDown.delay(index * 50)}>
       <Swipeable
         renderRightActions={() => renderRightActions(item)}
         overshootRight={false}
+        friction={1.5}
+        rightThreshold={60}
       >
         <VideoListItem video={item} onPress={() => handleVideoPress(item.id)} />
       </Swipeable>
@@ -123,16 +138,18 @@ export default function MainScreen() {
           </Text>
           <Pressable
             onPress={handleAddVideo}
-            className="bg-blue-600 px-8 py-4 rounded-lg active:opacity-80"
+            className="bg-blue-600 px-8 py-4 rounded-2xl active:opacity-70"
+            style={{
+              shadowColor: "#3B82F6",
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: 0.3,
+              shadowRadius: 8,
+              elevation: 8,
+            }}
           >
-            <View className="flex-row items-center">
-              <Ionicons
-                name="add-circle-outline"
-                size={24}
-                color="white"
-                style={{ marginRight: 8 }}
-              />
-              <Text className="text-white font-semibold text-lg">
+            <View className="flex-row items-center gap-2">
+              <Ionicons name="add-circle-outline" size={28} color="white" />
+              <Text className="text-white font-bold text-lg">
                 Add Your First Video
               </Text>
             </View>
@@ -146,35 +163,29 @@ export default function MainScreen() {
   return (
     <GestureHandlerRootView className="flex-1">
       <SafeAreaView className="flex-1 bg-gray-50 dark:bg-gray-950">
-        {/* Header with Add Button */}
-        <View className="px-4 py-3 flex-row items-center justify-between bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
-          <Text className="text-xl font-bold text-gray-900 dark:text-white">
-            My Video Diaries
-          </Text>
-          <Pressable
-            onPress={handleAddVideo}
-            className="bg-blue-600 px-4 py-2 rounded-lg active:opacity-80"
-          >
-            <View className="flex-row items-center">
-              <Ionicons
-                name="add"
-                size={20}
-                color="white"
-                style={{ marginRight: 4 }}
-              />
-              <Text className="text-white font-semibold">Add</Text>
-            </View>
-          </Pressable>
-        </View>
-
         {/* Video List */}
         <FlashList
           data={videos}
           renderItem={renderItem}
-          estimatedItemSize={120}
+          estimatedItemSize={132}
           keyExtractor={(item) => item.id.toString()}
-          contentContainerStyle={{ paddingTop: 12, paddingBottom: 12 }}
+          contentContainerStyle={{ paddingTop: 12, paddingBottom: 100 }}
         />
+
+        {/* Floating Action Button */}
+        <Pressable
+          onPress={handleAddVideo}
+          className="absolute bottom-6 right-6 bg-blue-600 w-14 h-14 rounded-full items-center justify-center active:scale-95"
+          style={{
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.3,
+            shadowRadius: 8,
+            elevation: 8,
+          }}
+        >
+          <Ionicons name="add" size={32} color="white" />
+        </Pressable>
       </SafeAreaView>
     </GestureHandlerRootView>
   );
