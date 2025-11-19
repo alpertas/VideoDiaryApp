@@ -17,7 +17,8 @@ interface VideoTrimmerProps {
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const TIMELINE_PADDING = 40;
 const TIMELINE_WIDTH = SCREEN_WIDTH - TIMELINE_PADDING * 2;
-const TRIM_DURATION = 5000; // 5 seconds in milliseconds
+const MIN_DURATION = 1000; // 1 second in milliseconds
+const MAX_DURATION = 5000; // 5 seconds in milliseconds
 
 /**
  * VideoTrimmer allows selecting a 5-second segment from a video.
@@ -30,18 +31,16 @@ export function VideoTrimmer({
   onTrimChange,
 }: VideoTrimmerProps) {
   const [startTime, setStartTime] = useState(0);
-  const [endTime, setEndTime] = useState(
-    Math.min(TRIM_DURATION, videoDuration)
-  );
+  const [endTime, setEndTime] = useState(Math.min(MAX_DURATION, videoDuration));
 
   // Shared values for animated positions
   const startPosition = useSharedValue(0);
   const endPosition = useSharedValue(
-    (Math.min(TRIM_DURATION, videoDuration) / videoDuration) * TIMELINE_WIDTH
+    (Math.min(MAX_DURATION, videoDuration) / videoDuration) * TIMELINE_WIDTH
   );
   const savedStart = useSharedValue(0);
   const savedEnd = useSharedValue(
-    (Math.min(TRIM_DURATION, videoDuration) / videoDuration) * TIMELINE_WIDTH
+    (Math.min(MAX_DURATION, videoDuration) / videoDuration) * TIMELINE_WIDTH
   );
 
   // Convert position to time
@@ -60,7 +59,7 @@ export function VideoTrimmer({
     [onTrimChange]
   );
 
-  // Start handle gesture - moves both handles together maintaining 5s duration
+  // Start handle gesture - move start handle independently with min/max constraints
   const startHandleGesture = Gesture.Pan()
     .onBegin(() => {
       "worklet";
@@ -68,27 +67,25 @@ export function VideoTrimmer({
       savedEnd.value = endPosition.value;
     })
     .onUpdate((event) => {
-      ("worklet");
-      const trimWidth = (TRIM_DURATION / videoDuration) * TIMELINE_WIDTH;
-      const maxStartPosition = TIMELINE_WIDTH - trimWidth;
-      const newStartPosition = Math.max(
+      "worklet";
+      const maxStartPosition =
+        endPosition.value - (MIN_DURATION / videoDuration) * TIMELINE_WIDTH;
+      const newPosition = Math.max(
         0,
         Math.min(savedStart.value + event.translationX, maxStartPosition)
       );
-      // Keep 5-second duration by moving both handles together
-      startPosition.value = newStartPosition;
-      endPosition.value = newStartPosition + trimWidth;
+      startPosition.value = newPosition;
     })
     .onEnd(() => {
       "worklet";
       const newStartTime = positionToTime(startPosition.value);
-      const newEndTime = newStartTime + TRIM_DURATION;
+      const newEndTime = positionToTime(endPosition.value);
       runOnJS(updateTrimRange)(newStartTime, newEndTime);
       savedStart.value = startPosition.value;
       savedEnd.value = endPosition.value;
     });
 
-  // End handle gesture - moves both handles together maintaining 5s duration
+  // End handle gesture - move end handle independently with min/max constraints
   const endHandleGesture = Gesture.Pan()
     .onBegin(() => {
       "worklet";
@@ -96,20 +93,53 @@ export function VideoTrimmer({
       savedEnd.value = endPosition.value;
     })
     .onUpdate((event) => {
-      ("worklet");
-      const trimWidth = (TRIM_DURATION / videoDuration) * TIMELINE_WIDTH;
-      const newEndPosition = Math.max(
-        trimWidth,
-        Math.min(savedEnd.value + event.translationX, TIMELINE_WIDTH)
+      "worklet";
+      const minEndPosition =
+        startPosition.value + (MIN_DURATION / videoDuration) * TIMELINE_WIDTH;
+      const maxEndPosition = Math.min(
+        TIMELINE_WIDTH,
+        startPosition.value + (MAX_DURATION / videoDuration) * TIMELINE_WIDTH
       );
-      // Keep 5-second duration by moving both handles together
-      endPosition.value = newEndPosition;
-      startPosition.value = newEndPosition - trimWidth;
+      const newPosition = Math.max(
+        minEndPosition,
+        Math.min(savedEnd.value + event.translationX, maxEndPosition)
+      );
+      endPosition.value = newPosition;
     })
     .onEnd(() => {
       "worklet";
+      const newStartTime = positionToTime(startPosition.value);
       const newEndTime = positionToTime(endPosition.value);
-      const newStartTime = newEndTime - TRIM_DURATION;
+      runOnJS(updateTrimRange)(newStartTime, newEndTime);
+      savedStart.value = startPosition.value;
+      savedEnd.value = endPosition.value;
+    });
+
+  // Center pan gesture - drag entire selection maintaining duration
+  const centerPanGesture = Gesture.Pan()
+    .onBegin(() => {
+      "worklet";
+      savedStart.value = startPosition.value;
+      savedEnd.value = endPosition.value;
+    })
+    .onUpdate((event) => {
+      "worklet";
+      const selectionWidth = savedEnd.value - savedStart.value;
+      let newStart = savedStart.value + event.translationX;
+
+      // Constrain to bounds
+      newStart = Math.max(
+        0,
+        Math.min(newStart, TIMELINE_WIDTH - selectionWidth)
+      );
+
+      startPosition.value = newStart;
+      endPosition.value = newStart + selectionWidth;
+    })
+    .onEnd(() => {
+      "worklet";
+      const newStartTime = positionToTime(startPosition.value);
+      const newEndTime = positionToTime(endPosition.value);
       runOnJS(updateTrimRange)(newStartTime, newEndTime);
       savedStart.value = startPosition.value;
       savedEnd.value = endPosition.value;
@@ -135,12 +165,15 @@ export function VideoTrimmer({
         uri={videoUri}
         className="w-full h-64 bg-black rounded-lg mb-4"
         autoPlay={false}
+        contentFit="contain"
+        startTime={startTime}
+        endTime={endTime}
       />
 
       {/* Timeline with Draggable Handles */}
       <View className="mt-2 px-10">
         <Text className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">
-          Drag handles to select 5-second segment
+          Drag handles to select 1-5 second segment
         </Text>
 
         <View
@@ -148,20 +181,19 @@ export function VideoTrimmer({
           style={{ overflow: "visible" }}
         >
           {/* Selected Region Highlight */}
-          <Animated.View
-            style={[
-              selectionStyle,
-              {
-                position: "absolute",
-                top: 0,
-                bottom: 0,
-                backgroundColor: "rgba(59, 130, 246, 0.3)",
-                borderLeftWidth: 2,
-                borderRightWidth: 2,
-                borderColor: "#3B82F6",
-              },
-            ]}
-          />
+          <GestureDetector gesture={centerPanGesture}>
+            <Animated.View
+              style={[
+                selectionStyle,
+                {
+                  position: "absolute",
+                  top: 0,
+                  bottom: 0,
+                  backgroundColor: "rgba(59, 130, 246, 0.3)",
+                },
+              ]}
+            />
+          </GestureDetector>
 
           {/* Start Handle */}
           <GestureDetector gesture={startHandleGesture}>
@@ -238,7 +270,7 @@ export function VideoTrimmer({
             Start: {(startTime / 1000).toFixed(1)}s
           </Text>
           <Text className="text-sm font-semibold text-blue-600">
-            Duration: 5.0s
+            Duration: {((endTime - startTime) / 1000).toFixed(1)}s
           </Text>
           <Text className="text-sm text-gray-600 dark:text-gray-400">
             End: {(endTime / 1000).toFixed(1)}s

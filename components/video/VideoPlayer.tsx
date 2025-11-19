@@ -7,6 +7,9 @@ interface VideoPlayerProps {
   uri: string;
   autoPlay?: boolean;
   className?: string;
+  contentFit?: "contain" | "cover" | "fill";
+  startTime?: number;
+  endTime?: number;
 }
 
 /**
@@ -18,6 +21,9 @@ export function VideoPlayer({
   uri,
   autoPlay = false,
   className = "",
+  contentFit = "cover",
+  startTime,
+  endTime,
 }: VideoPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(autoPlay);
 
@@ -26,6 +32,9 @@ export function VideoPlayer({
     try {
       player.loop = false;
       player.muted = false;
+      if (startTime !== undefined) {
+        player.currentTime = startTime / 1000; // Convert ms to seconds
+      }
       if (autoPlay) {
         player.play();
       }
@@ -34,15 +43,46 @@ export function VideoPlayer({
     }
   });
 
-  // Sync playing state with player status
+  // Sync playing state with player status and handle segment playback
   useEffect(() => {
     if (player) {
-      const subscription = player.addListener("playingChange", (newState) => {
+      const playingSubscription = player.addListener("playingChange", (newState) => {
         setIsPlaying(newState.isPlaying);
       });
-      return () => subscription.remove();
+
+      // Handle segment end time
+      let timeUpdateSubscription: any;
+      if (endTime !== undefined) {
+        timeUpdateSubscription = player.addListener("timeUpdate", (status) => {
+          const currentTimeMs = status.currentTime * 1000;
+          if (currentTimeMs >= endTime && player.playing) {
+            player.pause();
+            if (startTime !== undefined) {
+              player.currentTime = startTime / 1000;
+            }
+          }
+        });
+      }
+
+      return () => {
+        playingSubscription.remove();
+        if (timeUpdateSubscription) {
+          timeUpdateSubscription.remove();
+        }
+      };
     }
-  }, [player]);
+  }, [player, startTime, endTime]);
+
+  // Update video position when startTime changes
+  useEffect(() => {
+    if (player && startTime !== undefined) {
+      try {
+        player.currentTime = startTime / 1000;
+      } catch (error) {
+        // Silently ignore seek errors
+      }
+    }
+  }, [player, startTime]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -75,7 +115,7 @@ export function VideoPlayer({
       <VideoView
         player={player}
         style={{ width: "100%", height: "100%" }}
-        contentFit="cover"
+        contentFit={contentFit}
         nativeControls={false}
       />
 
