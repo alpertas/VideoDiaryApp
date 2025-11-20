@@ -54,7 +54,7 @@ export function VideoPlayer({
       );
 
       // Handle segment end time with setInterval (timeUpdate event doesn't fire reliably)
-      let intervalId: NodeJS.Timeout | null = null;
+      let intervalId: ReturnType<typeof setInterval> | null = null;
       if (endTime !== undefined && startTime !== undefined) {
         intervalId = setInterval(() => {
           if (player && player.playing) {
