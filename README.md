@@ -1,50 +1,158 @@
-# Welcome to your Expo app 👋
+# 🇹🇷 Video Diary App (Türkçe Dokümantasyon)
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+**SevenApps** için teknik bir vaka çalışması (case study) olarak geliştirilen bu proje; video anılarını kaydetmek, kırpmak ve yönetmek için tasarlanmış, **prodüksiyon seviyesinde** ve **ölçeklenebilir** bir React Native uygulamasıdır.
 
-## Get started
+Proje; modern mimari desenleri, katı tip güvenliği (strict type safety) ve offline-first (önce çevrimdışı) veri kalıcılığı prensiplerini sergilemektedir.
 
-1. Install dependencies
+---
 
-   ```bash
-   npm install
-   ```
+## 🚀 Temel Özellikler ve Teslimatlar
 
-2. Start the app
+Bu proje, vaka çalışmasında belirtilen **tüm zorunlu ve bonus gereksinimleri** karşılamaktadır.
 
-   ```bash
-   npx expo start
-   ```
+- ✅ **Video Kırpma Akışı:** Video seçimi, kırpma (5sn segment) ve kaydetme işlemlerini yöneten özel 3 adımlı sihirbaz.
+- ✅ **Kalıcı Veri Depolama:** Metadata verileri **SQLite** üzerinde, fiziksel medya dosyaları ise **DocumentDirectory** (Kalıcı Dizin) içinde saklanır.
+- ✅ **Yüksek Performanslı Liste:** 60FPS kaydırma performansı için önbellekli thumbnailler (küçük resimler) ile `@shopify/flash-list` kullanılmıştır.
+- ✅ **Sağlam Mimari:** Tanstack Query (Sunucu Durumu) ve Zustand (UI Durumu) ile sorumlulukların ayrılması (Separation of Concerns).
+- ✅ **Düzenleme Yeteneği:** Video metadata'sı üzerinde tam CRUD (Oluşturma, Okuma, Güncelleme, Silme) işlemleri.
+- ✅ **Modern UI/UX:** Stil için `NativeWind`, akıcı geçişler için `Reanimated` ve etkileşimli scrubber için `Gesture Handler`.
+- ✅ **Validasyon:** `Zod` kullanılarak sağlanan katı şema doğrulama.
 
-In the output, you'll find options to open the app in a
+---
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## 🛠 Teknoloji Yığını (Tech Stack)
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+### Çekirdek
+- **Framework:** [Expo (Managed Workflow)](https://expo.dev)
+- **Dil:** [TypeScript](https://www.typescriptlang.org/)
+- **Navigasyon:** [Expo Router](https://docs.expo.dev/router/introduction/) (Dosya tabanlı yönlendirme)
 
-## Get a fresh project
+### Veri & State
+- **Sunucu/Asenkron State:** [@tanstack/react-query](https://tanstack.com/query/latest) (v5)
+- **UI State:** [Zustand](https://github.com/pmndrs/zustand)
+- **Veritabanı:** [expo-sqlite](https://docs.expo.dev/versions/latest/sdk/sqlite/)
+- **Validasyon:** [Zod](https://zod.dev/) + [React Hook Form](https://react-hook-form.com/)
 
-When you're ready, run:
+### UI & Medya
+- **Stil:** [NativeWind](https://www.nativewind.dev/) (Tailwind CSS)
+- **Video İşleme:** `expo-trim-video` (Kırpma) & `expo-video-thumbnails` (Thumbnail oluşturma)
+- **Video Oynatma:** `expo-video`
+- **Animasyonlar:** [React Native Reanimated](https://docs.swmansion.com/react-native-reanimated/) & [Gesture Handler](https://docs.swmansion.com/react-native-gesture-handler/)
+
+---
+
+## 🏗 Mimari ve Kritik Kararlar
+
+Bu bölüm, ölçeklenebilirlik ve performans odaklı alınan kritik teknik kararların gerekçelerini açıklar.
+
+### 1. SQLite vs. AsyncStorage
+**Karar:** Birincil veri deposu olarak `expo-sqlite` kullanıldı.
+**Gerekçe:** `AsyncStorage` basit olsa da, şifrelenmemiştir, sadece anahtar-değer (key-value) tabanlıdır ve boyut sınırları vardır. Gelecekte karmaşık filtreleme (örn: "Geçen ayın videolarını göster") gerektirebilecek ölçeklenebilir bir uygulama için ilişkisel bir veritabanı (SQLite) veri bütünlüğü ve sorgu performansı açısından çok daha üstündür.
+
+### 2. Tanstack Query vs. Global State
+**Karar:** Tüm veritabanı etkileşimleri için Tanstack Query kullanıldı.
+**Gerekçe:** Veritabanı "Sunucu Durumu" (Server State) olarak ele alındı. Tanstack Query; önbellekleme, yükleme durumları ve en önemlisi **önbellek geçersiz kılma (cache invalidation)** süreçlerini yönetir.
+- *Örnek:* `useAddVideoMutation` tamamlandığında, otomatik olarak `['videos']` sorgu anahtarını geçersiz kılar. Bu sayede Ana Ekran listesi, manuel bir state müdahalesine gerek kalmadan anında yenilenir.
+
+### 3. Dosya Kalıcılık Stratejisi (Kritik)
+**Sorun:** `expo-image-picker` ve `expo-trim-video` dosyaları işletim sisteminin `CacheDirectory` (Geçici Dizin) klasörüne kaydeder.
+**Risk:** İşletim sistemi, depolama alanı azaldığında bu dizini temizler. Bu da veri kaybına (Veritabanında bozuk linkler) yol açar.
+**Çözüm:**
+1.  **Kırpma:** Video geçici bir yola kırpılır.
+2.  **Taşıma:** Dosya açıkça `FileSystem.documentDirectory` (Kalıcı Depolama) konumuna taşınır.
+3.  **Thumbnail:** Bir önizleme resmi oluşturulur ve o da kalıcı depolamaya taşınır.
+4.  **Kaydetme:** Yalnızca bu *kalıcı* yollar (URI) SQLite'a kaydedilir.
+
+### 4. Liste Performansı
+**Karar:** Liste içinde `<Video />` yerine küçük resimler için `<Image />` kullanıldı.
+**Gerekçe:** Bir liste içinde birden fazla video oynatıcı örneği (instance) oluşturmak ciddi bellek tüketimine yol açar. Oluşturma aşamasında statik bir thumbnail üreterek ve bunu `FlashList` içinde `Expo Image` ile render ederek, yüzlerce öğe olsa bile listenin performanslı kalması sağlanır.
+
+---
+
+
+# 📂 Proje Dosya Yapısı (File Structure)
 
 ```bash
-npm run reset-project
+app/
+├── _layout.tsx          # Root Layout (QueryClient & SQLite Provider kurulumu)
+├── index.tsx            # Ana Ekran (Video Listesi - FlashList)
+├── add.tsx              # Video Ekleme Sihirbazı (Modal)
+├── videos/
+│   └── [id].tsx         # Video Detay ve Oynatma Sayfası
+└── edit/
+    └── [id].tsx         # Video Metadata Düzenleme Sayfası (Modal)
+
+components/
+├── video/
+│   ├── VideoPlayer.tsx  # expo-video kullanan oynatıcı bileşeni
+│   ├── VideoListItem.tsx # Listede thumbnail gösteren bileşen (<Image> kullanır)
+│   └── VideoTrimmer.tsx # Reanimated & GestureHandler ile kırpma arayüzü
+└── ui/
+    └── Button.tsx       # NativeWind varyantlı buton bileşeni
+
+lib/
+├── database.ts          # SQLite veritabanı başlatma ve CRUD işlemleri
+├── queries.ts           # Tanstack Query hook'ları ve mutasyonları (useAddVideoMutation vb.)
+└── validation.ts        # Zod şemaları (videoMetadataSchema)
+
+store/
+└── ui-store.ts          # Global UI state (varsa tema vb. için)
+
+types/
+└── index.ts             # TypeScript interface'leri (Video, VideoInput)
+
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-## Learn more
+## 🚀 Kurulum ve Çalıştırma
 
-To learn more about developing your project with Expo, look at the following resources:
+### Gereksinimler
+- Node.js (LTS)
+- iOS Simulator (Mac) veya Android Emulator
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+### Adımlar
 
-## Join the community
+1.  **Depoyu klonlayın:**
+    ```bash
+    git clone [https://github.com/kullaniciadiniz/video-diary-app.git](https://github.com/kullaniciadiniz/video-diary-app.git)
+    cd video-diary-app
+    ```
 
-Join our community of developers creating universal apps.
+2.  **Bağımlılıkları yükleyin:**
+    ```bash
+    npm install
+    ```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+3.  **Prebuild (Native Modüller İçin Zorunlu):**
+    Bu proje native kod (`expo-sqlite`, video işleme mantığı) içerdiği için native dizinlerin oluşturulması gerekir.
+    ```bash
+    npx expo prebuild
+    ```
+
+4.  **iOS üzerinde çalıştırın:**
+    ```bash
+    npx expo run:ios
+    ```
+
+5.  **Android üzerinde çalıştırın:**
+    ```bash
+    npx expo run:android
+    ```
+
+---
+
+## 🧐 İnceleme Rehberi (Reviewer Guide)
+
+Eğer bu kodu **React Native Developer** pozisyonu için inceliyorsanız, aşağıdaki dosyalara odaklanmanızı öneririm:
+
+1.  **`lib/queries.ts`**: Kırpma, dosya taşıma, thumbnail oluşturma ve veritabanı kaydı gibi karmaşık akışı yöneten `useAddVideoMutation` hook'unu içerir.
+2.  **`components/video/VideoTrimmer.tsx`**: Özel scrubber arayüzü için `Reanimated` ve `GestureHandler` kullanımını gösterir.
+3.  **`lib/database.ts`**: Saf SQLite implementasyonunu ve şema tanımını gösterir.
+4.  **`app/add.tsx`**: Yerel state (Sihirbaz adımları) ile global mutasyonların nasıl etkileşime girdiğini gösterir.
+
+---
+
+**Yazar:** Alper
+**Tarih:** Kasım 2025
+```
