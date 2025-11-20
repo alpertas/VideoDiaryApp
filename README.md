@@ -50,6 +50,7 @@ Vaka çalışmasında talep edilen teknolojilerin tamamı kullanılmıştır:
 | **Stil** | **NativeWind** | Tailwind CSS tabanlı hızlı ve tutarlı stillendirme. |
 | **Animasyon** | **Reanimated** | Liste girişleri ve UI etkileşimleri. |
 | **Validasyon** | **Zod** | Form verilerinin doğrulanması. |
+| **i18n** | **i18n-js** | Çoklu dil desteği (Türkçe/İngilizce). |
 
 ---
 
@@ -114,13 +115,13 @@ Projeyi yerel ortamınızda çalıştırmak için aşağıdaki adımları izleyi
     - `.env` dosyası `.gitignore` içinde yer aldığı için repository'ye commit edilmez.
     - Production ortamında bu değerleri `app.config.ts` üzerinden veya CI/CD pipeline'ınızdan enjekte edebilirsiniz.
 
-3.  **Native Build Oluşturun (Prebuild):**
+4.  **Native Build Oluşturun (Prebuild):**
     Proje native modüller (`expo-sqlite`, video işleme) içerdiği için prebuild işlemi gereklidir.
     ```bash
     npx expo prebuild
     ```
 
-4.  **Uygulamayı Başlatın:**
+5.  **Uygulamayı Başlatın:**
     *   **iOS:** `npx expo run:ios`
     *   **Android:** `npx expo run:android`
 
@@ -140,6 +141,38 @@ VideoDiary/
 ├── lib/                 # İş mantığı ve yardımcı fonksiyonlar
 │   ├── database.ts      # SQLite işlemleri
 │   ├── queries.ts       # Tanstack Query hook'ları
-│   └── validation.ts    # Zod şemaları
+│   ├── validation.ts    # Zod şemaları (i18n entegreli)
+│   ├── i18n.ts          # i18n yapılandırması
+│   └── translations/    # Çeviri dosyaları
+│       ├── en.json      # İngilizce çeviriler
+│       ├── tr.json      # Türkçe çeviriler
+│       └── README.md    # i18n dokümantasyonu
+├── types/               # TypeScript tip tanımları
 └── assets/              # Statik dosyalar
 ```
+
+---
+
+## 🌍 Çoklu Dil Desteği (i18n)
+
+Uygulama **Türkçe** ve **İngilizce** dillerini desteklemektedir. Dil seçimi cihazın sistem diline göre otomatik yapılır.
+
+### Özellikler:
+- ✅ **JSON Tabanlı Çeviriler:** Tüm metinler `lib/translations/` klasöründe ayrı JSON dosyalarında tutulur
+- ✅ **Validation Mesajları:** Zod validation hata mesajları da i18n ile yerelleştirilmiştir
+- ✅ **Fallback Desteği:** Bir çeviri eksikse otomatik olarak İngilizce kullanılır
+- ✅ **Bakım Kolaylığı:** Çevirileri güncellemek için sadece JSON dosyalarını düzenlemek yeterlidir
+
+### Kullanım Örneği:
+```typescript
+import i18n from '@/lib/i18n';
+
+// Basit metin
+const text = i18n.t('common.loading'); // "Yükleniyor..." veya "Loading..."
+
+// Parametreli metin
+const message = i18n.t('main.deleteConfirmMessage', { name: 'Video 1' });
+```
+
+Detaylı bilgi için: `lib/translations/README.md`
+
