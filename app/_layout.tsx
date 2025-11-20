@@ -1,14 +1,14 @@
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { LoadingScreen } from "@/components/LoadingScreen";
+import { useAppLoading } from "@/hooks/useAppLoading";
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useEffect } from "react";
 import "react-native-reanimated";
 import "../global.css";
 
 import { useColorScheme } from "@/hooks/use-color-scheme";
-import { initDatabase } from "@/lib/database";
 
 // Create QueryClient instance with default options
 const queryClient = new QueryClient({
@@ -20,15 +20,14 @@ const queryClient = new QueryClient({
   },
 });
 
-
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const { isReady, error } = useAppLoading();
 
-  useEffect(() => {
-    initDatabase().catch((error) => {
-      console.error("Database initialization failed:", error);
-    });
-  }, []);
+  // Show loading screen while app is initializing
+  if (!isReady) {
+    return <LoadingScreen error={error} />;
+  }
 
   return (
     <ErrorBoundary>
