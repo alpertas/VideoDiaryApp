@@ -1,0 +1,58 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "next": "Next"
+  },
+  "validation": {
+    "nameRequired": "Name is required",
+    "nameMaxLength": "Name must be less than 100 characters",
+    "descriptionMaxLength": "Description must be less than 500 characters",
+    "videoUriRequired": "Video URI is required",
+    "videoDurationMin": "Video must be at least 5 seconds long",
+    "startTimePositive": "Start time must be positive",
+    "endTimePositive": "End time must be positive",
+    "endTimeAfterStart": "End time must be after start time",
+    "trimRangeExact": "Trim range must be exactly 5 seconds"
+  },
+  "main": {
+    "title": "Video Diary",
+    "emptyTitle": "No Video Diaries Yet",
+    "emptySubtitle": "Start capturing your memories by adding your first video diary.",
+    "addFirst": "Add Your First Video",
+    "deleteConfirmTitle": "Delete Video",
+    "deleteConfirmMessage": "Are you sure you want to delete \"%{name}\"?",
+    "deleteSuccess": "Video deleted successfully",
+    "deleteError": "Failed to delete video"
+  },
+  "add": {
+    "step1Title": "Select Video",
+    "step1Subtitle": "Choose a video from your library that is at least %{duration} seconds long.",
+    "chooseBtn": "Choose from Library",
+    "step2Title": "Trim Video",
+    "step2Subtitle": "Select a %{duration}-second segment from your video by dragging the handles.",
+    "step3Title": "Add Details",
+    "step3Subtitle": "Give your video diary a name and optional description.",
+    "nameLabel": "Name *",
+    "namePlaceholder": "Enter video name",
+    "descLabel": "Description",
+    "descPlaceholder": "Enter description (optional)",
+    "videoTooShortTitle": "Video Too Short",
+    "videoTooShortMsg": "Please select a video that is at least %{duration} seconds long.",
+    "permissionTitle": "Permission Required",
+    "permissionMsg": "Please allow access to your photo library to select videos.",
+    "loadError": "Failed to load video. Please try again.",
+    "successMsg": "Video diary created successfully!"
+  },
+  "details": {
+    "notFoundTitle": "Video Not Found",
+    "notFoundMsg": "This video may have been deleted.",
+    "noDesc": "No description provided"
+  }
+}

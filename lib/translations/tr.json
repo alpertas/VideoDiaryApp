@@ -1,0 +1,58 @@
+{
+  "common": {
+    "loading": "Yükleniyor...",
+    "error": "Hata",
+    "success": "Başarılı",
+    "cancel": "İptal",
+    "save": "Kaydet",
+    "delete": "Sil",
+    "edit": "Düzenle",
+    "back": "Geri",
+    "next": "İleri"
+  },
+  "validation": {
+    "nameRequired": "İsim gereklidir",
+    "nameMaxLength": "İsim 100 karakterden az olmalıdır",
+    "descriptionMaxLength": "Açıklama 500 karakterden az olmalıdır",
+    "videoUriRequired": "Video URI gereklidir",
+    "videoDurationMin": "Video en az 5 saniye uzunluğunda olmalıdır",
+    "startTimePositive": "Başlangıç zamanı pozitif olmalıdır",
+    "endTimePositive": "Bitiş zamanı pozitif olmalıdır",
+    "endTimeAfterStart": "Bitiş zamanı başlangıç zamanından sonra olmalıdır",
+    "trimRangeExact": "Kırpma aralığı tam olarak 5 saniye olmalıdır"
+  },
+  "main": {
+    "title": "Video Günlüğü",
+    "emptyTitle": "Henüz Video Günlüğü Yok",
+    "emptySubtitle": "İlk video günlüğünüzü ekleyerek anılarınızı kaydetmeye başlayın.",
+    "addFirst": "İlk Videonu Ekle",
+    "deleteConfirmTitle": "Videoyu Sil",
+    "deleteConfirmMessage": "\"%{name}\" videosunu silmek istediğinize emin misiniz?",
+    "deleteSuccess": "Video başarıyla silindi",
+    "deleteError": "Video silinemedi"
+  },
+  "add": {
+    "step1Title": "Video Seç",
+    "step1Subtitle": "Galerinizden en az %{duration} saniye uzunluğunda bir video seçin.",
+    "chooseBtn": "Galeriden Seç",
+    "step2Title": "Videoyu Kırp",
+    "step2Subtitle": "Tutamaçları sürükleyerek videonuzdan %{duration} saniyelik bir bölüm seçin.",
+    "step3Title": "Detay Ekle",
+    "step3Subtitle": "Video günlüğünüze bir isim ve isteğe bağlı açıklama ekleyin.",
+    "nameLabel": "İsim *",
+    "namePlaceholder": "Video ismini girin",
+    "descLabel": "Açıklama",
+    "descPlaceholder": "Açıklama girin (isteğe bağlı)",
+    "videoTooShortTitle": "Video Çok Kısa",
+    "videoTooShortMsg": "Lütfen en az %{duration} saniye uzunluğunda bir video seçin.",
+    "permissionTitle": "İzin Gerekli",
+    "permissionMsg": "Video seçmek için lütfen galeri erişimine izin verin.",
+    "loadError": "Video yüklenemedi. Lütfen tekrar deneyin.",
+    "successMsg": "Video günlüğü başarıyla oluşturuldu!"
+  },
+  "details": {
+    "notFoundTitle": "Video Bulunamadı",
+    "notFoundMsg": "Bu video silinmiş olabilir.",
+    "noDesc": "Açıklama girilmemiş"
+  }
+}
