@@ -96,6 +96,24 @@ Projeyi yerel ortamınızda çalıştırmak için aşağıdaki adımları izleyi
     npm install
     ```
 
+3.  **Environment Variables Yapılandırması:**
+    Proje kök dizininde `.env.example` dosyasını `.env` olarak kopyalayın:
+    ```bash
+    cp .env.example .env
+    ```
+    
+    `.env` dosyasında aşağıdaki değişkenler tanımlanmıştır:
+    
+    | Değişken | Açıklama | Varsayılan Değer |
+    |----------|----------|------------------|
+    | `EXPO_PUBLIC_DB_NAME` | SQLite veritabanı dosya adı | `videodiary.db` |
+    | `EXPO_PUBLIC_MAX_VIDEO_DURATION` | Maksimum video süresi (ms) | `5000` (5 saniye) |
+    
+    **Önemli Notlar:**
+    - Expo'da environment variables'ın client tarafında kullanılabilmesi için `EXPO_PUBLIC_` prefix'i gereklidir.
+    - `.env` dosyası `.gitignore` içinde yer aldığı için repository'ye commit edilmez.
+    - Production ortamında bu değerleri `app.config.ts` üzerinden veya CI/CD pipeline'ınızdan enjekte edebilirsiniz.
+
 3.  **Native Build Oluşturun (Prebuild):**
     Proje native modüller (`expo-sqlite`, video işleme) içerdiği için prebuild işlemi gereklidir.
     ```bash
