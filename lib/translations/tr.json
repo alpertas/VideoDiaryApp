@@ -1,6 +1,9 @@
 {
   "common": {
     "loading": "Yükleniyor...",
+    "loadingApp": "Video Günlüğünüz hazırlanıyor...",
+    "loadingError": "Uygulama Başlatılamadı",
+    "retry": "Lütfen tekrar denemek için uygulamayı yeniden başlatın",
     "error": "Hata",
     "success": "Başarılı",
     "cancel": "İptal",

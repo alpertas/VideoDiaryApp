@@ -1,6 +1,9 @@
 {
   "common": {
     "loading": "Loading...",
+    "loadingApp": "Preparing your Video Diary...",
+    "loadingError": "Failed to Start App",
+    "retry": "Please restart the app to try again",
     "error": "Error",
     "success": "Success",
     "cancel": "Cancel",
