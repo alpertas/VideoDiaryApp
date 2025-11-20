@@ -1,158 +1,127 @@
-# 🇹🇷 Video Diary App (Türkçe Dokümantasyon)
-
-**SevenApps** için teknik bir vaka çalışması (case study) olarak geliştirilen bu proje; video anılarını kaydetmek, kırpmak ve yönetmek için tasarlanmış, **prodüksiyon seviyesinde** ve **ölçeklenebilir** bir React Native uygulamasıdır.
-
-Proje; modern mimari desenleri, katı tip güvenliği (strict type safety) ve offline-first (önce çevrimdışı) veri kalıcılığı prensiplerini sergilemektedir.
+# 📱 React Native Case Study - Video Diary App
 
 ---
 
-## 🚀 Temel Özellikler ve Teslimatlar
+## 🎯 Proje Özeti
 
-Bu proje, vaka çalışmasında belirtilen **tüm zorunlu ve bonus gereksinimleri** karşılamaktadır.
+**Video Diary App**, kullanıcıların videolarını içe aktarıp 5 saniyelik kesitler halinde kırparak, isim ve açıklama ekleyip saklayabildikleri bir dijital günlük uygulamasıdır.
 
-- ✅ **Video Kırpma Akışı:** Video seçimi, kırpma (5sn segment) ve kaydetme işlemlerini yöneten özel 3 adımlı sihirbaz.
-- ✅ **Kalıcı Veri Depolama:** Metadata verileri **SQLite** üzerinde, fiziksel medya dosyaları ise **DocumentDirectory** (Kalıcı Dizin) içinde saklanır.
-- ✅ **Yüksek Performanslı Liste:** 60FPS kaydırma performansı için önbellekli thumbnailler (küçük resimler) ile `@shopify/flash-list` kullanılmıştır.
-- ✅ **Sağlam Mimari:** Tanstack Query (Sunucu Durumu) ve Zustand (UI Durumu) ile sorumlulukların ayrılması (Separation of Concerns).
-- ✅ **Düzenleme Yeteneği:** Video metadata'sı üzerinde tam CRUD (Oluşturma, Okuma, Güncelleme, Silme) işlemleri.
-- ✅ **Modern UI/UX:** Stil için `NativeWind`, akıcı geçişler için `Reanimated` ve etkileşimli scrubber için `Gesture Handler`.
-- ✅ **Validasyon:** `Zod` kullanılarak sağlanan katı şema doğrulama.
+### ✅ Teslim Edilen Özellikler (Deliverables)
+
+Proje, belirtilen gereksinimlerin **tamamını** kapsamaktadır:
+
+1.  **Ana Ekran (Main Screen):**
+    *   Kırpılan videoların listelenmesi (`FlashList` ile yüksek performans).
+    *   Kalıcı veri saklama (`SQLite` + `FileSystem`).
+    *   Detay sayfasına navigasyon.
+2.  **Detay Sayfası (Details Page):**
+    *   Video oynatma ve metadata (isim, açıklama) gösterimi.
+    *   Minimalist ve odaklı UI tasarımı.
+3.  **Kırpma Modalı (Crop Modal - 3 Adımlı Sihirbaz):**
+    *   **Adım 1:** Galeriden video seçimi (`expo-image-picker`).
+    *   **Adım 2:** 5 saniyelik aralık seçimi ve önizleme (`VideoTrimmer` bileşeni).
+    *   **Adım 3:** Metadata girişi ve doğrulama.
+4.  **Video Kırpma İşlemi:**
+    *   `expo-trim-video` kütüphanesi kullanılarak asenkron kırpma.
+    *   `Tanstack Query` (useMutation) ile işlem yönetimi.
+
+### 🌟 Bonus Özellikler (Tamamlandı)
+
+*   ✅ **Düzenleme Sayfası (Edit Page):** Videoların isim ve açıklamalarını güncellemek için form yapısı.
+*   ✅ **Expo SQLite:** Yapılandırılmış ve kalıcı veri depolama için `AsyncStorage` yerine `SQLite` tercih edildi.
+*   ✅ **React Native Reanimated:** Akıcı liste animasyonları ve etkileşimler için entegre edildi.
+*   ✅ **Zod Validasyonu:** Form girişleri (isim, açıklama) için katı şema kontrolü.
 
 ---
 
 ## 🛠 Teknoloji Yığını (Tech Stack)
 
-### Çekirdek
-- **Framework:** [Expo (Managed Workflow)](https://expo.dev)
-- **Dil:** [TypeScript](https://www.typescriptlang.org/)
-- **Navigasyon:** [Expo Router](https://docs.expo.dev/router/introduction/) (Dosya tabanlı yönlendirme)
+Vaka çalışmasında talep edilen teknolojilerin tamamı kullanılmıştır:
 
-### Veri & State
-- **Sunucu/Asenkron State:** [@tanstack/react-query](https://tanstack.com/query/latest) (v5)
-- **UI State:** [Zustand](https://github.com/pmndrs/zustand)
-- **Veritabanı:** [expo-sqlite](https://docs.expo.dev/versions/latest/sdk/sqlite/)
-- **Validasyon:** [Zod](https://zod.dev/) + [React Hook Form](https://react-hook-form.com/)
-
-### UI & Medya
-- **Stil:** [NativeWind](https://www.nativewind.dev/) (Tailwind CSS)
-- **Video İşleme:** `expo-trim-video` (Kırpma) & `expo-video-thumbnails` (Thumbnail oluşturma)
-- **Video Oynatma:** `expo-video`
-- **Animasyonlar:** [React Native Reanimated](https://docs.swmansion.com/react-native-reanimated/) & [Gesture Handler](https://docs.swmansion.com/react-native-gesture-handler/)
+| Kategori | Teknoloji | Kullanım Amacı |
+|----------|-----------|----------------|
+| **Core** | **Expo (Managed)** | Proje altyapısı ve geliştirme ortamı. |
+| **Navigasyon** | **Expo Router** | Dosya tabanlı, modern navigasyon yapısı. |
+| **State** | **Zustand** | Global UI durumu yönetimi. |
+| **Async State** | **Tanstack Query** | Veri çekme, önbellekleme ve asenkron işlem (kırpma) yönetimi. |
+| **Veritabanı** | **Expo SQLite** | Video metadata'sının kalıcı ve güvenli saklanması. |
+| **Video** | **expo-trim-video** | Video işleme ve kırpma mantığı. |
+| **Oynatıcı** | **Expo Video** | Performanslı video oynatma bileşeni. |
+| **Stil** | **NativeWind** | Tailwind CSS tabanlı hızlı ve tutarlı stillendirme. |
+| **Animasyon** | **Reanimated** | Liste girişleri ve UI etkileşimleri. |
+| **Validasyon** | **Zod** | Form verilerinin doğrulanması. |
 
 ---
 
-## 🏗 Mimari ve Kritik Kararlar
+## 🏗 Mimari Kararlar ve "Key Considerations"
 
-Bu bölüm, ölçeklenebilirlik ve performans odaklı alınan kritik teknik kararların gerekçelerini açıklar.
+Proje geliştirilirken vaka çalışmasındaki "Key Considerations" maddelerine özel önem verilmiştir:
 
-### 1. SQLite vs. AsyncStorage
-**Karar:** Birincil veri deposu olarak `expo-sqlite` kullanıldı.
-**Gerekçe:** `AsyncStorage` basit olsa da, şifrelenmemiştir, sadece anahtar-değer (key-value) tabanlıdır ve boyut sınırları vardır. Gelecekte karmaşık filtreleme (örn: "Geçen ayın videolarını göster") gerektirebilecek ölçeklenebilir bir uygulama için ilişkisel bir veritabanı (SQLite) veri bütünlüğü ve sorgu performansı açısından çok daha üstündür.
+### 1. Ölçeklenebilirlik (Scalability)
+*   **Bileşen Mimarisi:** `VideoPlayer`, `VideoListItem`, `VideoTrimmer` gibi bileşenler tekrar kullanılabilir şekilde ayrıştırıldı.
+*   **Veri Katmanı:** `lib/queries.ts` ve `lib/database.ts` ile veri erişim mantığı UI'dan tamamen izole edildi. Bu sayede veritabanı veya API değişikliği UI'ı etkilemez.
 
-### 2. Tanstack Query vs. Global State
-**Karar:** Tüm veritabanı etkileşimleri için Tanstack Query kullanıldı.
-**Gerekçe:** Veritabanı "Sunucu Durumu" (Server State) olarak ele alındı. Tanstack Query; önbellekleme, yükleme durumları ve en önemlisi **önbellek geçersiz kılma (cache invalidation)** süreçlerini yönetir.
-- *Örnek:* `useAddVideoMutation` tamamlandığında, otomatik olarak `['videos']` sorgu anahtarını geçersiz kılar. Bu sayede Ana Ekran listesi, manuel bir state müdahalesine gerek kalmadan anında yenilenir.
+### 2. Performans (Performance)
+*   **FlashList:** Uzun listelerde dahi 60 FPS kaydırma deneyimi için `FlatList` yerine `FlashList` kullanıldı.
+*   **Thumbnail Stratejisi:** Listede doğrudan video oynatıcıları render etmek yerine, oluşturulan thumbnail resimleri (`<Image>`) gösterilerek bellek kullanımı minimize edildi.
+*   **Tanstack Query:** Veri çekme ve güncelleme işlemleri optimize edildi, gereksiz render'ların önüne geçildi.
 
-### 3. Dosya Kalıcılık Stratejisi (Kritik)
-**Sorun:** `expo-image-picker` ve `expo-trim-video` dosyaları işletim sisteminin `CacheDirectory` (Geçici Dizin) klasörüne kaydeder.
-**Risk:** İşletim sistemi, depolama alanı azaldığında bu dizini temizler. Bu da veri kaybına (Veritabanında bozuk linkler) yol açar.
-**Çözüm:**
-1.  **Kırpma:** Video geçici bir yola kırpılır.
-2.  **Taşıma:** Dosya açıkça `FileSystem.documentDirectory` (Kalıcı Depolama) konumuna taşınır.
-3.  **Thumbnail:** Bir önizleme resmi oluşturulur ve o da kalıcı depolamaya taşınır.
-4.  **Kaydetme:** Yalnızca bu *kalıcı* yollar (URI) SQLite'a kaydedilir.
+### 3. Kullanılabilirlik (Usability)
+*   **Adım Adım Sihirbaz:** Karmaşık video ekleme süreci, kullanıcıyı yormayan 3 adımlı bir sihirbaza dönüştürüldü.
+*   **Geri Bildirimler:** İşlem başarı/hata durumları, yükleniyor göstergeleri ve Haptic (titreşim) geri bildirimleri ile kullanıcı deneyimi zenginleştirildi.
 
-### 4. Liste Performansı
-**Karar:** Liste içinde `<Video />` yerine küçük resimler için `<Image />` kullanıldı.
-**Gerekçe:** Bir liste içinde birden fazla video oynatıcı örneği (instance) oluşturmak ciddi bellek tüketimine yol açar. Oluşturma aşamasında statik bir thumbnail üreterek ve bunu `FlashList` içinde `Expo Image` ile render ederek, yüzlerce öğe olsa bile listenin performanslı kalması sağlanır.
-
----
-
-
-# 📂 Proje Dosya Yapısı (File Structure)
-
-```bash
-app/
-├── _layout.tsx          # Root Layout (QueryClient & SQLite Provider kurulumu)
-├── index.tsx            # Ana Ekran (Video Listesi - FlashList)
-├── add.tsx              # Video Ekleme Sihirbazı (Modal)
-├── videos/
-│   └── [id].tsx         # Video Detay ve Oynatma Sayfası
-└── edit/
-    └── [id].tsx         # Video Metadata Düzenleme Sayfası (Modal)
-
-components/
-├── video/
-│   ├── VideoPlayer.tsx  # expo-video kullanan oynatıcı bileşeni
-│   ├── VideoListItem.tsx # Listede thumbnail gösteren bileşen (<Image> kullanır)
-│   └── VideoTrimmer.tsx # Reanimated & GestureHandler ile kırpma arayüzü
-└── ui/
-    └── Button.tsx       # NativeWind varyantlı buton bileşeni
-
-lib/
-├── database.ts          # SQLite veritabanı başlatma ve CRUD işlemleri
-├── queries.ts           # Tanstack Query hook'ları ve mutasyonları (useAddVideoMutation vb.)
-└── validation.ts        # Zod şemaları (videoMetadataSchema)
-
-store/
-└── ui-store.ts          # Global UI state (varsa tema vb. için)
-
-types/
-└── index.ts             # TypeScript interface'leri (Video, VideoInput)
-
-```
+### 4. Doğrulama (Validation)
+*   **Zod Entegrasyonu:** Kullanıcı hatalarını önlemek için form verileri `Zod` şemaları ile doğrulanıyor. Geçersiz veri girişinde kullanıcıya anlık uyarılar gösteriliyor.
 
 ---
 
 ## 🚀 Kurulum ve Çalıştırma
 
+Projeyi yerel ortamınızda çalıştırmak için aşağıdaki adımları izleyin:
+
 ### Gereksinimler
-- Node.js (LTS)
-- iOS Simulator (Mac) veya Android Emulator
+*   Node.js (LTS sürümü önerilir)
+*   iOS Simulator (Mac için) veya Android Emulator
 
 ### Adımlar
 
-1.  **Depoyu klonlayın:**
+1.  **Depoyu Klonlayın:**
     ```bash
-    git clone [https://github.com/kullaniciadiniz/video-diary-app.git](https://github.com/kullaniciadiniz/video-diary-app.git)
-    cd video-diary-app
+    git clone <repo-url>
+    cd VideoDiary
     ```
 
-2.  **Bağımlılıkları yükleyin:**
+2.  **Bağımlılıkları Yükleyin:**
     ```bash
     npm install
     ```
 
-3.  **Prebuild (Native Modüller İçin Zorunlu):**
-    Bu proje native kod (`expo-sqlite`, video işleme mantığı) içerdiği için native dizinlerin oluşturulması gerekir.
+3.  **Native Build Oluşturun (Prebuild):**
+    Proje native modüller (`expo-sqlite`, video işleme) içerdiği için prebuild işlemi gereklidir.
     ```bash
     npx expo prebuild
     ```
 
-4.  **iOS üzerinde çalıştırın:**
-    ```bash
-    npx expo run:ios
-    ```
+4.  **Uygulamayı Başlatın:**
+    *   **iOS:** `npx expo run:ios`
+    *   **Android:** `npx expo run:android`
 
-5.  **Android üzerinde çalıştırın:**
-    ```bash
-    npx expo run:android
-    ```
+> ⚠️ **Not:** Video işleme ve SQLite özellikleri Expo Go uygulamasında tam performanslı çalışmayabilir veya desteklenmeyebilir. Bu nedenle `run:ios` veya `run:android` komutları ile Development Build kullanılması önerilir.
 
 ---
 
-## 🧐 İnceleme Rehberi (Reviewer Guide)
+## 📂 Proje Yapısı
 
-Eğer bu kodu **React Native Developer** pozisyonu için inceliyorsanız, aşağıdaki dosyalara odaklanmanızı öneririm:
-
-1.  **`lib/queries.ts`**: Kırpma, dosya taşıma, thumbnail oluşturma ve veritabanı kaydı gibi karmaşık akışı yöneten `useAddVideoMutation` hook'unu içerir.
-2.  **`components/video/VideoTrimmer.tsx`**: Özel scrubber arayüzü için `Reanimated` ve `GestureHandler` kullanımını gösterir.
-3.  **`lib/database.ts`**: Saf SQLite implementasyonunu ve şema tanımını gösterir.
-4.  **`app/add.tsx`**: Yerel state (Sihirbaz adımları) ile global mutasyonların nasıl etkileşime girdiğini gösterir.
-
----
-
-**Yazar:** Alper
-**Tarih:** Kasım 2025
+```
+VideoDiary/
+├── app/                 # Expo Router sayfaları
+│   ├── index.tsx        # Ana Liste Ekranı
+│   ├── add.tsx          # Video Ekleme Sihirbazı
+│   └── videos/[id].tsx  # Detay Sayfası
+├── components/          # Yeniden kullanılabilir UI bileşenleri
+├── lib/                 # İş mantığı ve yardımcı fonksiyonlar
+│   ├── database.ts      # SQLite işlemleri
+│   ├── queries.ts       # Tanstack Query hook'ları
+│   └── validation.ts    # Zod şemaları
+└── assets/              # Statik dosyalar
 ```
