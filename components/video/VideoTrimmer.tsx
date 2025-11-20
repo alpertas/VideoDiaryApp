@@ -3,8 +3,11 @@ import { Dimensions, Text, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   runOnJS,
+  useAnimatedReaction,
   useAnimatedStyle,
+  useDerivedValue,
   useSharedValue,
+  withTiming,
 } from "react-native-reanimated";
 import { VideoPlayer } from "./VideoPlayer";
 
@@ -15,9 +18,9 @@ interface VideoTrimmerProps {
 }
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
-const TIMELINE_PADDING = 40;
+const TIMELINE_PADDING = 45;
 const TIMELINE_WIDTH = SCREEN_WIDTH - TIMELINE_PADDING * 2;
-const HANDLE_WIDTH = 40;
+const HANDLE_WIDTH = 25;
 const USABLE_TIMELINE_WIDTH = TIMELINE_WIDTH - HANDLE_WIDTH;
 const MIN_DURATION = 1000; // 1 second in milliseconds
 const MAX_DURATION = 5000; // 5 seconds in milliseconds
@@ -50,6 +53,10 @@ export function VideoTrimmer({
     timeToPosition(Math.min(MAX_DURATION, videoDuration)) + HANDLE_WIDTH / 2
   );
 
+  // Shared values for scale animations
+  const startHandleScale = useSharedValue(1.0);
+  const endHandleScale = useSharedValue(1.0);
+
   // Convert position to time
   const positionToTime = (position: number): number => {
     "worklet";
@@ -57,6 +64,33 @@ export function VideoTrimmer({
       ((position - HANDLE_WIDTH / 2) / USABLE_TIMELINE_WIDTH) * videoDuration
     );
   };
+
+  // Derived values for live time display
+  const liveStartTime = useDerivedValue(() => {
+    return positionToTime(startPosition.value);
+  });
+
+  const liveEndTime = useDerivedValue(() => {
+    return positionToTime(endPosition.value);
+  });
+
+  const liveDuration = useDerivedValue(() => {
+    return liveEndTime.value - liveStartTime.value;
+  });
+
+  // Update state in real-time as handles move
+  useAnimatedReaction(
+    () => {
+      return {
+        start: liveStartTime.value,
+        end: liveEndTime.value,
+      };
+    },
+    (current) => {
+      runOnJS(setStartTime)(current.start);
+      runOnJS(setEndTime)(current.end);
+    }
+  );
 
   // Update trim range
   const updateTrimRange = useCallback(
@@ -71,9 +105,11 @@ export function VideoTrimmer({
   // Start handle gesture - move start handle independently with min/max constraints
   const startHandleGesture = Gesture.Pan()
     .onBegin(() => {
-      "worklet";
+      ("worklet");
       savedStart.value = startPosition.value;
       savedEnd.value = endPosition.value;
+      // Subtle scale up on press
+      startHandleScale.value = withTiming(1.05, { duration: 100 });
     })
     .onUpdate((event) => {
       "worklet";
@@ -92,20 +128,24 @@ export function VideoTrimmer({
       startPosition.value = newPosition;
     })
     .onEnd(() => {
-      "worklet";
+      ("worklet");
       const newStartTime = positionToTime(startPosition.value);
       const newEndTime = positionToTime(endPosition.value);
       runOnJS(updateTrimRange)(newStartTime, newEndTime);
       savedStart.value = startPosition.value;
       savedEnd.value = endPosition.value;
+      // Scale back to normal on release
+      startHandleScale.value = withTiming(1.0, { duration: 150 });
     });
 
   // End handle gesture - move end handle independently with min/max constraints
   const endHandleGesture = Gesture.Pan()
     .onBegin(() => {
-      "worklet";
+      ("worklet");
       savedStart.value = startPosition.value;
       savedEnd.value = endPosition.value;
+      // Subtle scale up on press
+      endHandleScale.value = withTiming(1.05, { duration: 100 });
     })
     .onUpdate((event) => {
       "worklet";
@@ -124,12 +164,14 @@ export function VideoTrimmer({
       endPosition.value = newPosition;
     })
     .onEnd(() => {
-      "worklet";
+      ("worklet");
       const newStartTime = positionToTime(startPosition.value);
       const newEndTime = positionToTime(endPosition.value);
       runOnJS(updateTrimRange)(newStartTime, newEndTime);
       savedStart.value = startPosition.value;
       savedEnd.value = endPosition.value;
+      // Scale back to normal on release
+      endHandleScale.value = withTiming(1.0, { duration: 150 });
     });
 
   // Center pan gesture - drag entire selection maintaining duration
@@ -163,11 +205,17 @@ export function VideoTrimmer({
     });
 
   const startHandleStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: startPosition.value - HANDLE_WIDTH / 2 }],
+    transform: [
+      { translateX: startPosition.value - HANDLE_WIDTH / 2 },
+      { scale: startHandleScale.value },
+    ],
   }));
 
   const endHandleStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: endPosition.value - HANDLE_WIDTH / 2 }],
+    transform: [
+      { translateX: endPosition.value - HANDLE_WIDTH / 2 },
+      { scale: endHandleScale.value },
+    ],
   }));
 
   const selectionStyle = useAnimatedStyle(() => ({
@@ -220,8 +268,8 @@ export function VideoTrimmer({
                 {
                   position: "absolute",
                   left: 0,
-                  top: -8,
-                  bottom: -8,
+                  top: -1,
+                  bottom: -1,
                   width: HANDLE_WIDTH,
                   backgroundColor: "#3B82F6",
                   borderRadius: 8,
@@ -238,10 +286,10 @@ export function VideoTrimmer({
             >
               <View
                 style={{
-                  width: 4,
-                  height: 40,
+                  width: 3,
+                  height: 35,
                   backgroundColor: "#FFFFFF",
-                  borderRadius: 2,
+                  borderRadius: 1,
                 }}
               />
             </Animated.View>
@@ -255,8 +303,8 @@ export function VideoTrimmer({
                 {
                   position: "absolute",
                   left: 0,
-                  top: -8,
-                  bottom: -8,
+                  top: -1,
+                  bottom: -1,
                   width: HANDLE_WIDTH,
                   backgroundColor: "#3B82F6",
                   borderRadius: 8,
@@ -273,10 +321,10 @@ export function VideoTrimmer({
             >
               <View
                 style={{
-                  width: 4,
-                  height: 40,
+                  width: 3,
+                  height: 35,
                   backgroundColor: "#FFFFFF",
-                  borderRadius: 2,
+                  borderRadius: 1,
                 }}
               />
             </Animated.View>
