@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { FlashList } from "@shopify/flash-list";
+import { FlashList, type FlashListRef } from "@shopify/flash-list";
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import React, { useEffect } from "react";
@@ -19,6 +19,7 @@ import Animated, {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { VideoListItem } from "@/components/video/VideoListItem";
+import i18n from "@/lib/i18n";
 import { useDeleteVideoMutation, useVideosQuery } from "@/lib/queries";
 import type { Video } from "@/types";
 
@@ -31,7 +32,7 @@ export default function MainScreen() {
   const { data: videos, isLoading } = useVideosQuery();
   const deleteVideoMutation = useDeleteVideoMutation();
 
-  const flashListRef = React.useRef<FlashList<Video> | null>(null);
+  const flashListRef = React.useRef<FlashListRef<Video>>(null);
 
   // FAB pulsating animation
   const fabScale = useSharedValue(1);
@@ -69,21 +70,21 @@ export default function MainScreen() {
   const handleDelete = (video: Video) => {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
     Alert.alert(
-      "Delete Video",
-      `Are you sure you want to delete "${video.name}"?`,
+      i18n.t("main.deleteConfirmTitle"),
+      i18n.t("main.deleteConfirmMessage", { name: video.name }),
       [
-        { text: "Cancel", style: "cancel" },
+        { text: i18n.t("common.cancel"), style: "cancel" },
         {
-          text: "Delete",
+          text: i18n.t("common.delete"),
           style: "destructive",
           onPress: () => {
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
             deleteVideoMutation.mutate(video, {
               onSuccess: () => {
-                Alert.alert("Success", "Video deleted successfully");
+                Alert.alert(i18n.t("common.success"), i18n.t("main.deleteSuccess"));
               },
               onError: () => {
-                Alert.alert("Error", "Failed to delete video");
+                Alert.alert(i18n.t("common.error"), i18n.t("main.deleteError"));
               },
             });
           },
@@ -106,7 +107,7 @@ export default function MainScreen() {
           style={{ height: "100%" }}
         >
           <Ionicons name="pencil" size={20} color="white" />
-          <Text className="text-white text-xs font-medium mt-1">Edit</Text>
+          <Text className="text-white text-xs font-medium mt-1">{i18n.t("common.edit")}</Text>
         </Pressable>
         <Pressable
           onPress={() => handleDelete(video)}
@@ -114,7 +115,7 @@ export default function MainScreen() {
           style={{ height: "100%" }}
         >
           <Ionicons name="trash" size={20} color="white" />
-          <Text className="text-white text-xs font-medium mt-1">Delete</Text>
+          <Text className="text-white text-xs font-medium mt-1">{i18n.t("common.delete")}</Text>
         </Pressable>
       </View>
     );
@@ -143,7 +144,7 @@ export default function MainScreen() {
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator size="large" color="#3B82F6" />
           <Text className="text-gray-600 dark:text-gray-400 mt-4">
-            Loading videos...
+            {i18n.t("common.loading")}
           </Text>
         </View>
       </SafeAreaView>
@@ -162,10 +163,10 @@ export default function MainScreen() {
             style={{ marginBottom: 16 }}
           />
           <Text className="text-2xl font-bold text-gray-900 dark:text-white mb-2 text-center">
-            No Video Diaries Yet
+            {i18n.t("main.emptyTitle")}
           </Text>
           <Text className="text-gray-600 dark:text-gray-400 text-center mb-8">
-            Start capturing your memories by adding your first video diary.
+            {i18n.t("main.emptySubtitle")}
           </Text>
           <Pressable
             onPress={handleAddVideo}
@@ -181,7 +182,7 @@ export default function MainScreen() {
             <View className="flex-row items-center gap-2">
               <Ionicons name="add-circle-outline" size={28} color="white" />
               <Text className="text-white font-bold text-lg">
-                Add Your First Video
+                {i18n.t("main.addFirst")}
               </Text>
             </View>
           </Pressable>
@@ -199,7 +200,6 @@ export default function MainScreen() {
           ref={flashListRef}
           data={videos}
           renderItem={renderItem}
-          estimatedItemSize={140}
           keyExtractor={(item) => item.id.toString()}
           contentContainerStyle={{ paddingTop: 12, paddingBottom: 100 }}
         />
