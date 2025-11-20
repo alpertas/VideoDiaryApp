@@ -1,7 +1,7 @@
-import * as SQLite from 'expo-sqlite';
 import type { Video, VideoInput } from '@/types';
+import * as SQLite from 'expo-sqlite';
 
-const DATABASE_NAME = 'videodiary.db';
+const DATABASE_NAME = process.env.EXPO_PUBLIC_DB_NAME || 'videodiary.db';
 
 let db: SQLite.SQLiteDatabase | null = null;
 
