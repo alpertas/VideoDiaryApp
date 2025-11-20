@@ -9,6 +9,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Button } from "@/components/ui/Button";
 import { VideoTrimmer } from "@/components/video/VideoTrimmer";
+import i18n from "@/lib/i18n";
 import { useAddVideoMutation } from "@/lib/queries";
 import {
   videoMetadataSchema,
@@ -32,7 +33,8 @@ export default function AddVideoScreen() {
   const [selectedVideo, setSelectedVideo] = useState<SelectedVideo | null>(
     null
   );
-  const [trimRange, setTrimRange] = useState({ start: 0, end: 5000 });
+  const MAX_DURATION = Number(process.env.EXPO_PUBLIC_MAX_VIDEO_DURATION) || 5000;
+  const [trimRange, setTrimRange] = useState({ start: 0, end: MAX_DURATION });
 
   const addVideoMutation = useAddVideoMutation();
 
@@ -44,7 +46,6 @@ export default function AddVideoScreen() {
     resolver: zodResolver(videoMetadataSchema),
     defaultValues: {
       name: "",
-      description: "",
     },
   });
 
@@ -56,8 +57,8 @@ export default function AddVideoScreen() {
 
       if (!permissionResult.granted) {
         Alert.alert(
-          "Permission Required",
-          "Please allow access to your photo library to select videos."
+          i18n.t("add.permissionTitle"),
+          i18n.t("add.permissionMsg")
         );
         return;
       }
@@ -74,15 +75,15 @@ export default function AddVideoScreen() {
 
         // Validate video asset
         if (!video.uri) {
-          Alert.alert("Error", "Failed to load video. Please try again.");
+          Alert.alert(i18n.t("common.error"), i18n.t("add.loadError"));
           return;
         }
 
         // Validate duration (must be at least 5 seconds)
-        if (!video.duration || video.duration < 5000) {
+        if (!video.duration || video.duration < MAX_DURATION) {
           Alert.alert(
-            "Video Too Short",
-            "Please select a video that is at least 5 seconds long."
+            i18n.t("add.videoTooShortTitle"),
+            i18n.t("add.videoTooShortMsg", { duration: MAX_DURATION / 1000 })
           );
           return;
         }
@@ -101,8 +102,8 @@ export default function AddVideoScreen() {
     } catch (error) {
       console.error("❌ Error selecting video:", error);
       Alert.alert(
-        "Error",
-        "Failed to load video. Please check permissions and try again."
+        i18n.t("common.error"),
+        i18n.t("add.loadError")
       );
     }
   };
@@ -137,12 +138,12 @@ export default function AddVideoScreen() {
       },
       {
         onSuccess: () => {
-          Alert.alert("Success", "Video diary created successfully!");
+          Alert.alert(i18n.t("common.success"), i18n.t("add.successMsg"));
           router.back();
         },
         onError: (error) => {
           Alert.alert(
-            "Error",
+            i18n.t("common.error"),
             error instanceof Error ? error.message : "Failed to save video"
           );
         },
@@ -203,14 +204,13 @@ export default function AddVideoScreen() {
             {currentStep === 1 && (
               <View className="flex-1 items-center justify-center py-8">
                 <Text className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                  Select Video
+                  {i18n.t("add.step1Title")}
                 </Text>
                 <Text className="text-gray-600 dark:text-gray-400 text-center mb-8">
-                  Choose a video from your library that is at least 5 seconds
-                  long.
+                  {i18n.t("add.step1Subtitle", { duration: MAX_DURATION / 1000 })}
                 </Text>
                 <Button
-                  title="Choose from Library"
+                  title={i18n.t("add.chooseBtn")}
                   onPress={handleSelectVideo}
                   variant="primary"
                 />
@@ -221,11 +221,10 @@ export default function AddVideoScreen() {
             {currentStep === 2 && selectedVideo && (
               <View className="flex-1 py-4">
                 <Text className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                  Trim Video
+                  {i18n.t("add.step2Title")}
                 </Text>
                 <Text className="text-gray-600 dark:text-gray-400 mb-6">
-                  Select a 5-second segment from your video by dragging the
-                  handles.
+                  {i18n.t("add.step2Subtitle", { duration: MAX_DURATION / 1000 })}
                 </Text>
                 <VideoTrimmer
                   videoUri={selectedVideo.uri}
@@ -239,16 +238,16 @@ export default function AddVideoScreen() {
             {currentStep === 3 && (
               <View className="flex-1 py-4">
                 <Text className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                  Add Details
+                  {i18n.t("add.step3Title")}
                 </Text>
                 <Text className="text-gray-600 dark:text-gray-400 mb-6">
-                  Give your video diary a name and optional description.
+                  {i18n.t("add.step3Subtitle")}
                 </Text>
 
                 {/* Name Input */}
                 <View className="mb-4">
                   <Text className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Name *
+                    {i18n.t("add.nameLabel")}
                   </Text>
                   <Controller
                     control={control}
@@ -256,7 +255,7 @@ export default function AddVideoScreen() {
                     render={({ field: { onChange, onBlur, value } }) => (
                       <TextInput
                         className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white px-4 py-3 rounded-lg"
-                        placeholder="Enter video name"
+                        placeholder={i18n.t("add.namePlaceholder")}
                         placeholderTextColor="#9CA3AF"
                         onBlur={onBlur}
                         onChangeText={onChange}
@@ -274,7 +273,7 @@ export default function AddVideoScreen() {
                 {/* Description Input */}
                 <View className="mb-6">
                   <Text className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Description
+                    {i18n.t("add.descLabel")}
                   </Text>
                   <Controller
                     control={control}
@@ -282,11 +281,11 @@ export default function AddVideoScreen() {
                     render={({ field: { onChange, onBlur, value } }) => (
                       <TextInput
                         className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white px-4 py-3 rounded-lg h-24"
-                        placeholder="Enter description (optional)"
+                        placeholder={i18n.t("add.descPlaceholder")}
                         placeholderTextColor="#9CA3AF"
                         onBlur={onBlur}
                         onChangeText={onChange}
-                        value={value}
+                        value={value || ""}
                         multiline
                         textAlignVertical="top"
                       />
@@ -302,7 +301,7 @@ export default function AddVideoScreen() {
             <View className="flex-row gap-3">
               <View className="flex-1">
                 <Button
-                  title={currentStep === 1 ? "Cancel" : "Back"}
+                  title={currentStep === 1 ? i18n.t("common.cancel") : i18n.t("common.back")}
                   onPress={goBack}
                   variant="secondary"
                   disabled={addVideoMutation.isPending}
@@ -310,11 +309,11 @@ export default function AddVideoScreen() {
               </View>
               <View className="flex-1">
                 {currentStep === 2 && (
-                  <Button title="Next" onPress={goNext} variant="primary" />
+                  <Button title={i18n.t("common.next")} onPress={goNext} variant="primary" />
                 )}
                 {currentStep === 3 && (
                   <Button
-                    title="Save"
+                    title={i18n.t("common.save")}
                     onPress={handleSubmit(onSubmit)}
                     variant="primary"
                     loading={addVideoMutation.isPending}

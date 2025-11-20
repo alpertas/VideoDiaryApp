@@ -1,3 +1,4 @@
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
@@ -19,10 +20,10 @@ const queryClient = new QueryClient({
   },
 });
 
+
 export default function RootLayout() {
   const colorScheme = useColorScheme();
 
-  // Initialize SQLite database on app start
   useEffect(() => {
     initDatabase().catch((error) => {
       console.error("Database initialization failed:", error);
@@ -30,42 +31,44 @@ export default function RootLayout() {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen
-            name="index"
-            options={{
-              title: "Video Diary",
-              headerShown: true,
-            }}
-          />
-          <Stack.Screen
-            name="add"
-            options={{
-              presentation: "modal",
-              title: "Add Video",
-              headerShown: true,
-            }}
-          />
-          <Stack.Screen
-            name="videos/[id]"
-            options={{
-              title: "Video Details",
-              headerShown: true,
-            }}
-          />
-          <Stack.Screen
-            name="edit/[id]"
-            options={{
-              presentation: "modal",
-              title: "Edit Video",
-              headerShown: true,
-            }}
-          />
-        </Stack>
-        <StatusBar style="auto" />
-      </ThemeProvider>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+          <Stack>
+            <Stack.Screen
+              name="index"
+              options={{
+                title: "Video Diary",
+                headerShown: true,
+              }}
+            />
+            <Stack.Screen
+              name="add"
+              options={{
+                presentation: "modal",
+                title: "Add Video",
+                headerShown: true,
+              }}
+            />
+            <Stack.Screen
+              name="videos/[id]"
+              options={{
+                title: "Video Details",
+                headerShown: true,
+              }}
+            />
+            <Stack.Screen
+              name="edit/[id]"
+              options={{
+                presentation: "modal",
+                title: "Edit Video",
+                headerShown: true,
+              }}
+            />
+          </Stack>
+          <StatusBar style="auto" />
+        </ThemeProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }

@@ -11,6 +11,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { VideoPlayer } from "@/components/video/VideoPlayer";
+import i18n from "@/lib/i18n";
 import { useVideoQuery } from "@/lib/queries";
 
 /**
@@ -49,10 +50,10 @@ export default function VideoDetailsScreen() {
         <View className="flex-1 items-center justify-center px-8">
           <Ionicons name="alert-circle-outline" size={80} color="#EF4444" />
           <Text className="text-xl font-bold text-gray-900 dark:text-white mt-4">
-            Video Not Found
+            {i18n.t("details.notFoundTitle")}
           </Text>
           <Text className="text-gray-600 dark:text-gray-400 text-center mt-2">
-            This video may have been deleted.
+            {i18n.t("details.notFoundMsg")}
           </Text>
         </View>
       </SafeAreaView>
@@ -96,7 +97,7 @@ export default function VideoDetailsScreen() {
             >
               <View className="flex-row items-center">
                 <Ionicons name="pencil" size={16} color="white" />
-                <Text className="text-white font-semibold ml-2">Edit</Text>
+                <Text className="text-white font-semibold ml-2">{i18n.t("common.edit")}</Text>
               </View>
             </Pressable>
           </View>
@@ -118,7 +119,7 @@ export default function VideoDetailsScreen() {
           {video.description && (
             <View>
               <Text className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                Description
+                {i18n.t("add.descLabel")}
               </Text>
               <Text className="text-gray-700 dark:text-gray-300 leading-6">
                 {video.description}
@@ -128,7 +129,7 @@ export default function VideoDetailsScreen() {
 
           {!video.description && (
             <Text className="text-gray-500 dark:text-gray-500 italic">
-              No description provided
+              {i18n.t("details.noDesc")}
             </Text>
           )}
         </View>
