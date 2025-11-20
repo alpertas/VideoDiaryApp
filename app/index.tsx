@@ -31,6 +31,8 @@ export default function MainScreen() {
   const { data: videos, isLoading } = useVideosQuery();
   const deleteVideoMutation = useDeleteVideoMutation();
 
+  const flashListRef = React.useRef<FlashList<Video> | null>(null);
+
   // FAB pulsating animation
   const fabScale = useSharedValue(1);
 
@@ -44,6 +46,13 @@ export default function MainScreen() {
       false
     );
   }, []);
+
+  // Scroll to top when new videos are added
+  useEffect(() => {
+    if (videos && videos.length > 0) {
+      flashListRef.current?.scrollToOffset({ offset: 0, animated: true });
+    }
+  }, [videos]);
 
   const fabAnimatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: fabScale.value }],
@@ -187,6 +196,7 @@ export default function MainScreen() {
       <SafeAreaView className="flex-1 bg-gray-50 dark:bg-gray-950">
         {/* Video List */}
         <FlashList
+          ref={flashListRef}
           data={videos}
           renderItem={renderItem}
           estimatedItemSize={140}

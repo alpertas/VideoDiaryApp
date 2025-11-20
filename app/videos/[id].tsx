@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React from "react";
 import {
   ActivityIndicator,
@@ -20,7 +20,14 @@ import { useVideoQuery } from "@/lib/queries";
 export default function VideoDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
-  const { data: video, isLoading } = useVideoQuery(Number(id));
+  const { data: video, isLoading, refetch } = useVideoQuery(Number(id));
+
+  // Refetch when screen comes into focus to ensure fresh data
+  useFocusEffect(
+    React.useCallback(() => {
+      refetch();
+    }, [refetch])
+  );
 
   const handleEdit = () => {
     router.push(`/edit/${id}`);
@@ -68,8 +75,12 @@ export default function VideoDetailsScreen() {
     <SafeAreaView className="flex-1 bg-white dark:bg-gray-900">
       <ScrollView className="flex-1">
         {/* Video Player */}
-        <View className="bg-black">
-          <VideoPlayer uri={video.uri} className="w-full aspect-video" />
+        <View className="bg-black w-full h-80 justify-center">
+          <VideoPlayer
+            uri={video.uri}
+            className="w-full h-full"
+            contentFit="contain"
+          />
         </View>
 
         {/* Metadata Section */}

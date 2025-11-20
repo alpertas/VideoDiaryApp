@@ -107,14 +107,24 @@ export function VideoPlayer({
       if (isPlaying) {
         player.pause();
       } else {
-        // If at end position, restart from beginning of trimmed segment
-        if (endTime !== undefined && startTime !== undefined) {
-          const currentTimeMs = player.currentTime * 1000;
-          // Check if video is at or very close to end time (within 100ms)
-          if (Math.abs(currentTimeMs - endTime) < 100) {
-            player.currentTime = startTime / 1000;
-          }
+        // If at end position, restart from beginning
+        const currentTimeMs = player.currentTime * 1000;
+        const durationMs = player.duration * 1000;
+
+        // Check if video is at end (within 100ms tolerance)
+        const isAtEnd = Math.abs(currentTimeMs - durationMs) < 100;
+        
+        // Check if video is at segment end (if trimming is active)
+        const isAtSegmentEnd = 
+          endTime !== undefined && 
+          startTime !== undefined && 
+          Math.abs(currentTimeMs - endTime) < 100;
+
+        if (isAtEnd || isAtSegmentEnd) {
+          const seekTime = startTime !== undefined ? startTime / 1000 : 0;
+          player.currentTime = seekTime;
         }
+        
         player.play();
       }
     }
