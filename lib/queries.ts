@@ -8,7 +8,6 @@ import {
 import type { Video, VideoCreationData } from "@/types";
 import * as db from "./database";
 // Use mock for Expo Go, real implementation needs development build
-import { trimVideo } from "./video-mock";
 
 /**
  * Query keys for cache management.
@@ -29,9 +28,6 @@ export function useVideosQuery() {
   });
 }
 
-/**
- * Fetch a single video by ID.
- */
 export function useVideoQuery(id: number) {
   return useQuery({
     queryKey: queryKeys.video(id),
@@ -69,22 +65,36 @@ export function useAddVideoMutation() {
         duration: `${((data.endTime - data.startTime) / 1000).toFixed(1)}s`,
       });
 
-      const trimResult = await trimVideo({
-        videoUri: data.sourceUri,
-        startMs: data.startTime,
-        endMs: data.endTime,
-      });
+      // Convert ms to seconds for expo-trim-video
+      const startSeconds = data.startTime / 1000;
+      const endSeconds = data.endTime / 1000;
 
-      if (!trimResult || !trimResult.videoUri) {
+      let trimResult;
+      try {
+        // Dynamically import to avoid crash in Expo Go where native module is missing
+        const { trimVideo } = await import("expo-trim-video");
+        trimResult = await trimVideo({
+          uri: data.sourceUri,
+          start: startSeconds,
+          end: endSeconds,
+        });
+      } catch (error) {
+        console.error("Trim video error:", error);
+        throw new Error(
+          "Video trimming requires a development build. Please run 'npx expo run:ios' or 'npx expo run:android'."
+        );
+      }
+
+      if (!trimResult || !trimResult.uri) {
         throw new Error("Video trimming failed");
       }
 
-      console.log("✅ Video trimmed:", trimResult.videoUri);
+      console.log("✅ Video trimmed:", trimResult.uri);
 
       // Step 2: Generate thumbnail from the trimmed video
       let thumbnailResult: VideoThumbnailsResult;
       try {
-        thumbnailResult = await getThumbnailAsync(trimResult.videoUri, {
+        thumbnailResult = await getThumbnailAsync(trimResult.uri, {
           time: 0, // First frame
         });
       } catch {
@@ -96,7 +106,7 @@ export function useAddVideoMutation() {
       const videoFileName = `video_${Date.now()}.mp4`;
       const thumbnailFileName = `thumb_${Date.now()}.jpg`;
 
-      const trimmedVideoFile = new File(trimResult.videoUri);
+      const trimmedVideoFile = new File(trimResult.uri);
       const thumbnailFile = new File(thumbnailResult.uri);
 
       const persistentVideoFile = new File(Paths.document, videoFileName);
