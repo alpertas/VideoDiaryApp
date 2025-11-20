@@ -31,6 +31,10 @@ Proje, belirtilen gereksinimlerin **tamamını** kapsamaktadır:
 *   ✅ **Expo SQLite:** Yapılandırılmış ve kalıcı veri depolama için `AsyncStorage` yerine `SQLite` tercih edildi.
 *   ✅ **React Native Reanimated:** Akıcı liste animasyonları ve etkileşimler için entegre edildi.
 *   ✅ **Zod Validasyonu:** Form girişleri (isim, açıklama) için katı şema kontrolü.
+*   ✅ **Merkezi Loading State Yönetimi:** Database initialization ve splash screen kontrolü için `useAppLoading` hook'u ile profesyonel uygulama başlatma deneyimi.
+*   ✅ **Çoklu Dil Desteği (i18n):** Türkçe ve İngilizce dil desteği, JSON tabanlı çeviri sistemi.
+*   ✅ **Error Boundary:** React Error Boundary ile runtime hataların yakalanması ve kullanıcı dostu hata mesajları.
+*   ✅ **Environment Variables:** `.env` dosyası ile yapılandırma yönetimi ve farklı ortamlar için destek.
 
 ---
 
@@ -73,6 +77,11 @@ Proje geliştirilirken vaka çalışmasındaki "Key Considerations" maddelerine 
 
 ### 4. Doğrulama (Validation)
 *   **Zod Entegrasyonu:** Kullanıcı hatalarını önlemek için form verileri `Zod` şemaları ile doğrulanıyor. Geçersiz veri girişinde kullanıcıya anlık uyarılar gösteriliyor.
+
+### 5. Uygulama Başlatma (App Initialization)
+*   **Merkezi Loading Yönetimi:** `useAppLoading` custom hook ile uygulama başlatma süreci orkestre edilir. Database initialization, splash screen kontrolü ve hata yönetimi tek bir noktadan yönetilir.
+*   **Güvenlik:** 10 saniyelik timeout mekanizması ile sonsuz loading durumlarının önüne geçilir.
+*   **Kullanıcı Deneyimi:** Uygulama kritik kaynaklar hazır olmadan render edilmez, kullanıcıya her zaman anlamlı geri bildirim sağlanır.
 
 ---
 
@@ -138,6 +147,10 @@ VideoDiary/
 │   ├── add.tsx          # Video Ekleme Sihirbazı
 │   └── videos/[id].tsx  # Detay Sayfası
 ├── components/          # Yeniden kullanılabilir UI bileşenleri
+│   ├── LoadingScreen.tsx # Uygulama başlatma ekranı
+│   └── ErrorBoundary.tsx # Runtime hata yakalama
+├── hooks/               # Custom React hooks
+│   └── useAppLoading.ts # Uygulama başlatma orkestratörü
 ├── lib/                 # İş mantığı ve yardımcı fonksiyonlar
 │   ├── database.ts      # SQLite işlemleri
 │   ├── queries.ts       # Tanstack Query hook'ları
