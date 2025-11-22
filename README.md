@@ -33,8 +33,10 @@ Proje, belirtilen gereksinimlerin **tamamını** kapsamaktadır:
 *   ✅ **Zod Validasyonu:** Form girişleri (isim, açıklama) için katı şema kontrolü.
 *   ✅ **Merkezi Loading State Yönetimi:** Database initialization ve splash screen kontrolü için `useAppLoading` hook'u ile profesyonel uygulama başlatma deneyimi.
 *   ✅ **Çoklu Dil Desteği (i18n):** Türkçe ve İngilizce dil desteği, JSON tabanlı çeviri sistemi.
-*   ✅ **Error Boundary:** React Error Boundary ile runtime hataların yakalanması ve kullanıcı dostu hata mesajları.
+*   ✅ **Error Boundary:** React Error Boundary ile runtime hataların yakalanması ve kullanıcı dostu hata mesajları (i18n ve NativeWind ile entegre).
 *   ✅ **Environment Variables:** `.env` dosyası ile yapılandırma yönetimi ve farklı ortamlar için destek.
+*   ✅ **Clean Architecture:** Custom hooks (`useAddVideoWizard`, `useVideoList`) ile business logic tamamen UI'dan ayrıştırıldı.
+*   ✅ **Dark Mode Support:** Status bar renkleri dark mode'a göre otomatik ayarlanır (Zustand + system preferences).
 
 ---
 
@@ -142,26 +144,45 @@ Projeyi yerel ortamınızda çalıştırmak için aşağıdaki adımları izleyi
 
 ```
 VideoDiary/
-├── app/                 # Expo Router sayfaları
-│   ├── index.tsx        # Ana Liste Ekranı
-│   ├── add.tsx          # Video Ekleme Sihirbazı
-│   └── videos/[id].tsx  # Detay Sayfası
-├── components/          # Yeniden kullanılabilir UI bileşenleri
-│   ├── LoadingScreen.tsx # Uygulama başlatma ekranı
-│   └── ErrorBoundary.tsx # Runtime hata yakalama
-├── hooks/               # Custom React hooks
-│   └── useAppLoading.ts # Uygulama başlatma orkestratörü
-├── lib/                 # İş mantığı ve yardımcı fonksiyonlar
-│   ├── database.ts      # SQLite işlemleri
-│   ├── queries.ts       # Tanstack Query hook'ları
-│   ├── validation.ts    # Zod şemaları (i18n entegreli)
-│   ├── i18n.ts          # i18n yapılandırması
-│   └── translations/    # Çeviri dosyaları
-│       ├── en.json      # İngilizce çeviriler
-│       ├── tr.json      # Türkçe çeviriler
-│       └── README.md    # i18n dokümantasyonu
-├── types/               # TypeScript tip tanımları
-└── assets/              # Statik dosyalar
+├── app/                      # Expo Router sayfaları
+│   ├── _layout.tsx           # Root layout (Theme, Query, Navigation)
+│   ├── index.tsx             # Ana Liste Ekranı (Dumb view)
+│   ├── add.tsx               # Video Ekleme Orkestratörü (Dumb view)
+│   ├── edit/[id].tsx         # Video Düzenleme Sayfası
+│   └── videos/[id].tsx       # Video Detay Sayfası
+├── components/               # Yeniden kullanılabilir UI bileşenleri
+│   ├── ErrorBoundary.tsx     # Runtime hata yakalama (i18n + NativeWind)
+│   ├── LoadingScreen.tsx     # Uygulama başlatma ekranı
+│   ├── ui/                   # Genel UI component'leri
+│   │   ├── Button.tsx        # Loading state destekli button
+│   │   └── SearchBar.tsx     # Arama bileşeni
+│   ├── video/                # Video ile ilgili component'ler
+│   │   ├── VideoListItem.tsx # Liste item bileşeni
+│   │   ├── VideoPlayer.tsx   # Video oynatıcı wrapper
+│   │   └── VideoTrimmer.tsx  # Video kırpma UI
+│   └── wizard/               # Video ekleme wizard adımları
+│       ├── Step1SelectVideo.tsx  # Adım 1: Video seçimi
+│       ├── Step2TrimVideo.tsx    # Adım 2: Video kırpma
+│       ├── Step3MetadataForm.tsx # Adım 3: Metadata girişi
+│       └── WizardLayout.tsx      # Wizard layout wrapper
+├── hooks/                    # Custom React hooks
+│   ├── useAppLoading.ts      # Uygulama başlatma orkestratörü
+│   ├── useColorScheme.ts     # Tema yönetimi (Zustand + system)
+│   ├── useAddVideoWizard.ts  # Video ekleme business logic
+│   └── useVideoList.ts       # Video listesi business logic
+├── lib/                      # İş mantığı ve yardımcı fonksiyonlar
+│   ├── database.ts           # SQLite işlemleri
+│   ├── queries.ts            # Tanstack Query hook'ları
+│   ├── validation.ts         # Zod şemaları (i18n entegreli)
+│   ├── i18n.ts               # i18n yapılandırması
+│   └── translations/         # Çeviri dosyaları
+│       ├── en.json           # İngilizce çeviriler
+│       └── tr.json           # Türkçe çeviriler
+├── store/                    # Zustand store'lar
+│   ├── filter-store.ts       # Filtreleme ve arama state
+│   └── ui-store.ts           # UI tercihleri (tema modu)
+├── types/                    # TypeScript tip tanımları
+└── assets/                   # Statik dosyalar
 ```
 
 ---
@@ -326,6 +347,58 @@ Bu bölüm, projede alınan önemli teknik kararların **neden** alındığını
 4. **Team Collaboration:** Herkes kendi local config'ini kullanır
 
 **Implementation:** `app.config.ts` ile `EXPO_PUBLIC_*` prefix requirement.
+
+---
+
+### Neden Clean Architecture Refactoring?
+
+**Karar:** Business logic'i custom hooks'a, UI'ı focused component'lere taşıma
+
+**Sebep:**
+1. **Separation of Concerns:** Logic vs. Presentation tamamen ayrıldı
+2. **Testability:** Hook'lar UI'dan bağımsız test edilebilir
+3. **Reusability:** `useVideoList`, `useAddVideoWizard` farklı ekranlarda kullanılabilir
+4. **Maintainability:** Her component tek bir sorumluluğa odaklanıyor (~50-100 satır)
+5. **Scalability:** Yeni özellik eklemek daha kolay (hook extend et, component ekle)
+
+**Implementation:**
+- `app/add.tsx`: 320 satır → 60 satır ("Dumb View" pattern)
+- `hooks/useAddVideoWizard.ts`: Tüm wizard business logic
+- `components/wizard/*`: Her adım için focused component
+
+**Alternatif:** Monolithic screen components - Kabul edilmedi çünkü:
+- 300+ satırlık dosyalar maintainability problemleri
+- Logic ve UI iç içe, test edilemez
+- Kod tekrarı ve coupling issues
+
+---
+
+### Neden Image Picker Loading State?
+
+**Karar:** Image picker açılırken button'a loading state ekleme
+
+**Sebep:**
+1. **UX Problem:** Native bridge lag'i kullanıcıya freeze gibi görünüyor
+2. **Perceived Performance:** Spinner ile kullanıcı işlem olduğunu anlıyor
+3. **State Management:** Ephemeral UI state → `useState` (Zustand'a gerek yok)
+4. **Critical 100ms Delay:** React render cycle'ın UI'ı güncellemesi için native bridge block olmadan önce kısa delay
+
+**Implementation:**
+```typescript
+const [isPicking, setIsPicking] = useState(false);
+
+const handleSelectVideo = async () => {
+  setIsPicking(true);
+  await new Promise(r => setTimeout(r, 100)); // React render için
+  try {
+    await ImagePicker.launchImageLibraryAsync(...);
+  } finally {
+    setIsPicking(false); // Her durumda reset
+  }
+};
+```
+
+**Trade-off:** 100ms ek delay, ancak UX açısından çok daha iyi feedback.
 
 ---
 
