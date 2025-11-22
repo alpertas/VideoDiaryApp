@@ -433,7 +433,7 @@ const handleSelectVideo = async () => {
 | Ana Akış (Core Flow) | Tema (Dark & Light Mode) |
 | :---: | :---: |
 | <img src="https://github.com/user-attachments/assets/6cb0f23f-0560-455c-8d0b-857fcd12a7f7" width="280" /> | <img src="https://github.com/user-attachments/assets/0685a236-6829-4e63-b7f7-9f72743913d4" width="280" /> |
-| *Video seçme, kırpma, kaydetme, arama...* | *Dark Mode desteği* |
+| *Video seçme, kırpma, kaydetme, arama, sıralama, güncelleme, silme* | *Dark Mode desteği* |
 
 ## ✨ Özellik Detayları
 
@@ -449,13 +449,24 @@ Uygulama, cihazın diline göre otomatik olarak **Türkçe** veya **İngilizce**
 
 ## 🎓 Geliştirici Notları
 
-### Öğrenilen Pattern'ler
+### 🏗️ Implementation Highlights (Uygulama Detayları)
 
-- Custom hook design (separation of logic from UI)
-- Splash screen orchestration
-- Error boundary best practices
-- i18n architecture in React Native
-- FlashList optimization techniques
+Bu projede, sürdürülebilir ve ölçeklenebilir bir kod tabanı oluşturmak için aşağıdaki ileri seviye pattern'ler uygulanmıştır:
+
+### 🧩 Atomic & Composable Hooks
+İş mantığı (Business Logic) ve UI katmanı tamamen birbirinden izole edilmiştir. `useAddVideoWizard` gibi hook'lar, state yönetimini ve yan etkileri (side-effects) kapsülleyerek (encapsulation), UI bileşenlerini **"Dumb Component"** statüsünde tutar. Bu, kodun test edilebilirliğini ve yeniden kullanılabilirliğini maksimize eder.
+
+### 🛡️ Initialization Guard Pattern
+Uygulama başlatılırken oluşabilecek "Race Condition" risklerini önlemek için merkezi bir **`useAppLoading`** orkestrasyonu kurulmuştur. Veritabanı bağlantısı ve fontlar gibi kritik kaynaklar %100 hazır olmadan UI render edilmez; bu süreç Splash Screen arkasında güvenle yönetilir.
+
+### ⚡ Performance-First Rendering
+Büyük veri setlerinde dahi **60 FPS** kaydırma performansını garanti etmek için standart `FlatList` yerine **`FlashList`** mimarisi tercih edilmiştir. Render döngüleri `useCallback` ve `memo` ile optimize edilmiş, liste elemanlarında ağır video bileşenleri yerine hafif `thumbnail` görselleri kullanılarak bellek yönetimi (memory footprint) optimize edilmiştir.
+
+### 🌐 Type-Safe Localization Strategy
+i18n entegrasyonu, basit bir string değişimi olarak değil, TypeScript ile güçlendirilmiş **Tip Güvenli (Type-Safe)** bir yapıda kurgulanmıştır. Bu sayede eksik çeviri anahtarları derleme zamanında (compile-time) yakalanır.
+
+### 🧱 Resilient UI (Hata Toleransı)
+Beklenmedik runtime hatalarının tüm uygulamayı çökertmesini engellemek için **Error Boundary** pattern'i uygulanmıştır. Hata durumunda kullanıcıya teknik log yerine, aksiyon alabileceği (Retry mekanizmalı) dostane bir arayüz sunulur.
 
 ### Future Improvements
 
