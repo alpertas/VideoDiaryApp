@@ -5,6 +5,7 @@ import React, { useCallback, useEffect, useRef } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Reanimated, {
+  cancelAnimation,
   Easing,
   useAnimatedStyle,
   useSharedValue,
@@ -47,6 +48,12 @@ export default function MainScreen() {
       -1,
       true
     );
+
+    // Cleanup animation on unmount
+    return () => {
+      'worklet';
+      cancelAnimation(fabOpacity);
+    };
   }, [fabOpacity]);
 
   const fabAnimatedStyle = useAnimatedStyle(() => ({
