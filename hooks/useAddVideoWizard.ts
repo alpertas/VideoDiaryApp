@@ -8,8 +8,8 @@ import { Alert } from "react-native";
 import i18n from "@/lib/i18n";
 import { useAddVideoMutation } from "@/lib/queries";
 import {
-    videoMetadataSchema,
-    type VideoMetadataFormData,
+  videoMetadataSchema,
+  type VideoMetadataFormData,
 } from "@/lib/validation";
 
 export type WizardStep = 1 | 2 | 3;
@@ -25,6 +25,7 @@ export function useAddVideoWizard() {
   const [selectedVideo, setSelectedVideo] = useState<SelectedVideo | null>(null);
   const MAX_DURATION = Number(process.env.EXPO_PUBLIC_MAX_VIDEO_DURATION) || 5000;
   const [trimRange, setTrimRange] = useState({ start: 0, end: MAX_DURATION });
+  const [isPicking, setIsPicking] = useState(false);
 
   const addVideoMutation = useAddVideoMutation();
 
@@ -37,6 +38,12 @@ export function useAddVideoWizard() {
 
   // Step 1: Select video from library
   const handleSelectVideo = async () => {
+    setIsPicking(true);
+
+    // CRITICAL: Short delay to allow React render cycle to update UI (show spinner)
+    // before the Native Bridge blocks opening the Gallery
+    await new Promise(r => setTimeout(r, 100));
+
     try {
       const permissionResult =
         await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -83,6 +90,9 @@ export function useAddVideoWizard() {
     } catch (error) {
       console.error("❌ Error selecting video:", error);
       Alert.alert(i18n.t("common.error"), i18n.t("add.loadError"));
+    } finally {
+      // Always reset loading state, even if user cancels or error occurs
+      setIsPicking(false);
     }
   };
 
@@ -140,6 +150,7 @@ export function useAddVideoWizard() {
     form,
     MAX_DURATION,
     isPending: addVideoMutation.isPending,
+    isPicking,
     handleSelectVideo,
     handleTrimChange,
     onSubmit,

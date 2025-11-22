@@ -46,6 +46,7 @@ export function Button({
       className={buttonClasses}
       onPress={onPress}
       disabled={isDisabled}
+      style={loading ? { minWidth: 180 } : undefined}
       {...props}
     >
       {loading ? (

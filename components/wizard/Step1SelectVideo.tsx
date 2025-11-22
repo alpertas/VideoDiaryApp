@@ -7,9 +7,10 @@ import i18n from "@/lib/i18n";
 interface Step1SelectVideoProps {
   onSelect: () => void;
   maxDuration: number;
+  isPicking: boolean;
 }
 
-export function Step1SelectVideo({ onSelect, maxDuration }: Step1SelectVideoProps) {
+export function Step1SelectVideo({ onSelect, maxDuration, isPicking }: Step1SelectVideoProps) {
   return (
     <View className="flex-1 items-center justify-center py-8">
       <Text className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
@@ -22,6 +23,7 @@ export function Step1SelectVideo({ onSelect, maxDuration }: Step1SelectVideoProp
         title={i18n.t("add.chooseBtn")}
         onPress={onSelect}
         variant="primary"
+        loading={isPicking}
       />
     </View>
   );

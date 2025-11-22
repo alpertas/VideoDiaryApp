@@ -17,6 +17,7 @@ export default function AddVideoScreen() {
     form,
     MAX_DURATION,
     isPending,
+    isPicking,
     handleSelectVideo,
     handleTrimChange,
     onSubmit,
@@ -36,6 +37,7 @@ export default function AddVideoScreen() {
         <Step1SelectVideo
           onSelect={handleSelectVideo}
           maxDuration={MAX_DURATION}
+          isPicking={isPicking}
         />
       )}
 
