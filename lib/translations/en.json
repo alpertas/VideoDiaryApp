@@ -32,7 +32,10 @@
     "deleteConfirmTitle": "Delete Video",
     "deleteConfirmMessage": "Are you sure you want to delete \"%{name}\"?",
     "deleteSuccess": "Video deleted successfully",
-    "deleteError": "Failed to delete video"
+    "deleteError": "Failed to delete video",
+    "searchPlaceholder": "Search videos...",
+    "sort": "Sort",
+    "noSearchResults": "No videos found matching \"%{query}\""
   },
   "add": {
     "step1Title": "Select Video",

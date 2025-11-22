@@ -127,7 +127,7 @@ export default function MainScreen() {
   const renderItem = ({ item, index }: { item: Video; index: number }) => (
     <Animated.View
       entering={FadeInDown.delay(index * 50)}
-      style={{ marginBottom: 16, marginHorizontal: 16 }}
+      style={{ marginBottom: 16 }}
     >
       <Swipeable
         renderRightActions={() => renderRightActions(item)}
@@ -140,37 +140,7 @@ export default function MainScreen() {
     </Animated.View>
   );
 
-  const renderHeader = () => (
-    <View className="px-4 py-2 mb-2">
-      <View className="flex-row gap-2">
-        <View className="flex-1 bg-white dark:bg-gray-800 rounded-lg flex-row items-center px-3 border border-gray-200 dark:border-gray-700">
-          <Ionicons name="search" size={20} color="#9CA3AF" />
-          <TextInput
-            className="flex-1 py-3 px-2 text-gray-900 dark:text-white"
-            placeholder="Search videos..."
-            placeholderTextColor="#9CA3AF"
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
-          {searchQuery.length > 0 && (
-            <Pressable onPress={() => setSearchQuery("")}>
-              <Ionicons name="close-circle" size={20} color="#9CA3AF" />
-            </Pressable>
-          )}
-        </View>
-        <Pressable
-          onPress={toggleSortOrder}
-          className="bg-white dark:bg-gray-800 px-4 rounded-lg justify-center items-center border border-gray-200 dark:border-gray-700 active:bg-gray-100 dark:active:bg-gray-700"
-        >
-          <Ionicons
-            name={sortOrder === "desc" ? "arrow-down" : "arrow-up"}
-            size={20}
-            color="#3B82F6"
-          />
-        </Pressable>
-      </View>
-    </View>
-  );
+
 
   // Loading State
   if (isLoading) {
@@ -186,8 +156,8 @@ export default function MainScreen() {
     );
   }
 
-  // Empty State
-  if (!videos || videos.length === 0) {
+  // Empty State (No Videos at all)
+  if (!videos || (videos.length === 0 && !searchQuery)) {
     return (
       <SafeAreaView className="flex-1 bg-white dark:bg-gray-900">
         <View className="flex-1 items-center justify-center px-8">
@@ -226,19 +196,63 @@ export default function MainScreen() {
     );
   }
 
-  // List View
+  // List View (With Search Header)
   return (
     <GestureHandlerRootView className="flex-1">
       <SafeAreaView className="flex-1 bg-gray-50 dark:bg-gray-950">
-        {/* Video List */}
-        <FlashList
-          ref={flashListRef}
-          data={videos}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id.toString()}
-          contentContainerStyle={{ paddingTop: 12, paddingBottom: 100 }}
-          ListHeaderComponent={renderHeader}
-        />
+        {/* Fixed Header with Search and Sort */}
+        <View className="px-4 py-2 mb-2 bg-gray-50 dark:bg-gray-950 z-10">
+          <View className="flex-row gap-2">
+            <View className="flex-1 bg-white dark:bg-gray-800 rounded-lg flex-row items-center px-3 border border-gray-200 dark:border-gray-700 h-12">
+              <Ionicons name="search" size={20} color="#9CA3AF" />
+              <TextInput
+                className="flex-1 py-3 px-2 text-gray-900 dark:text-white"
+                placeholder={i18n.t("main.searchPlaceholder")}
+                placeholderTextColor="#9CA3AF"
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+              />
+              {searchQuery.length > 0 && (
+                <Pressable onPress={() => setSearchQuery("")}>
+                  <Ionicons name="close-circle" size={20} color="#9CA3AF" />
+                </Pressable>
+              )}
+            </View>
+            <Pressable
+              onPress={toggleSortOrder}
+              className="bg-white dark:bg-gray-800 px-4 rounded-lg flex-row gap-2 justify-center items-center border border-gray-200 dark:border-gray-700 active:bg-gray-100 dark:active:bg-gray-700 h-12"
+            >
+              <Text className="text-gray-700 dark:text-gray-300 font-medium">
+                {i18n.t("main.sort")}
+              </Text>
+              <Ionicons
+                name={sortOrder === "desc" ? "arrow-down" : "arrow-up"}
+                size={16}
+                color="#3B82F6"
+              />
+            </Pressable>
+          </View>
+        </View>
+
+        {/* Content */}
+        {videos && videos.length === 0 ? (
+          // Search Empty State
+          <View className="flex-1 items-center justify-center px-8 pb-20">
+            <Ionicons name="search-outline" size={64} color="#9CA3AF" />
+            <Text className="text-gray-500 dark:text-gray-400 text-center mt-4 text-lg">
+              {i18n.t("main.noSearchResults", { query: searchQuery })}
+            </Text>
+          </View>
+        ) : (
+          // Video List
+          <FlashList
+            ref={flashListRef}
+            data={videos}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id.toString()}
+              contentContainerStyle={{ paddingTop: 12, paddingBottom: 100, paddingHorizontal: 16 }}
+            />
+        )}
 
         {/* Floating Action Button */}
         <Animated.View

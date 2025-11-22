@@ -32,7 +32,10 @@
     "deleteConfirmTitle": "Videoyu Sil",
     "deleteConfirmMessage": "\"%{name}\" videosunu silmek istediğinize emin misiniz?",
     "deleteSuccess": "Video başarıyla silindi",
-    "deleteError": "Video silinemedi"
+    "deleteError": "Video silinemedi",
+    "searchPlaceholder": "Videolarda ara...",
+    "sort": "Sırala",
+    "noSearchResults": "\"%{query}\" ile eşleşen video bulunamadı"
   },
   "add": {
     "step1Title": "Video Seç",
