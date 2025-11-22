@@ -13,6 +13,11 @@
     "back": "Geri",
     "next": "İleri"
   },
+  "errorBoundary": {
+    "title": "Bir Sorun Oluştu",
+    "subtitle": "Üzgünüz, beklenmeyen bir hata meydana geldi.",
+    "restart": "Uygulamayı Yeniden Başlat"
+  },
   "validation": {
     "nameRequired": "İsim gereklidir",
     "nameMaxLength": "İsim 100 karakterden az olmalıdır",

@@ -13,6 +13,11 @@
     "back": "Back",
     "next": "Next"
   },
+  "errorBoundary": {
+    "title": "Oops! Something went wrong.",
+    "subtitle": "We're sorry, but an unexpected error has occurred.",
+    "restart": "Restart App"
+  },
   "validation": {
     "nameRequired": "Name is required",
     "nameMaxLength": "Name must be less than 100 characters",

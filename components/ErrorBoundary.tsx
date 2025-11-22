@@ -1,8 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
 import * as Updates from "expo-updates";
 import React, { Component, ErrorInfo, ReactNode } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+
+import i18n from "@/lib/i18n";
 
 interface Props {
   children: ReactNode;
@@ -34,7 +36,7 @@ export class ErrorBoundary extends Component<Props, State> {
   private handleRestart = async () => {
     try {
       await Updates.reloadAsync();
-    } catch (e) {
+    } catch {
       // If reload fails (e.g. in development), just reset state
       this.setState({ hasError: false, error: null });
     }
@@ -43,20 +45,29 @@ export class ErrorBoundary extends Component<Props, State> {
   public render() {
     if (this.state.hasError) {
       return (
-        <SafeAreaView style={styles.container}>
-          <View style={styles.content}>
+        <SafeAreaView className="flex-1 bg-white dark:bg-gray-900">
+          <View className="flex-1 items-center justify-center p-6">
             <Ionicons name="warning-outline" size={80} color="#EF4444" />
-            <Text style={styles.title}>Oops! Something went wrong.</Text>
-            <Text style={styles.subtitle}>
-              We're sorry, but an unexpected error has occurred.
+            <Text className="text-2xl font-bold text-gray-800 dark:text-white mt-4 mb-2">
+              {i18n.t("errorBoundary.title")}
+            </Text>
+            <Text className="text-base text-gray-500 dark:text-gray-400 text-center mb-8">
+              {i18n.t("errorBoundary.subtitle")}
             </Text>
             {this.state.error && (
-              <View style={styles.errorBox}>
-                <Text style={styles.errorText}>{this.state.error.toString()}</Text>
+              <View className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg mb-8 w-full">
+                <Text className="text-red-700 dark:text-red-400 text-xs font-mono">
+                  {this.state.error.toString()}
+                </Text>
               </View>
             )}
-            <Pressable onPress={this.handleRestart} style={styles.button}>
-              <Text style={styles.buttonText}>Restart App</Text>
+            <Pressable
+              onPress={this.handleRestart}
+              className="bg-blue-500 px-8 py-4 rounded-xl active:bg-blue-600"
+            >
+              <Text className="text-white text-base font-semibold">
+                {i18n.t("errorBoundary.restart")}
+              </Text>
             </Pressable>
           </View>
         </SafeAreaView>
@@ -66,52 +77,3 @@ export class ErrorBoundary extends Component<Props, State> {
     return this.props.children;
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-  content: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 24,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#1F2937",
-    marginTop: 16,
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: "#6B7280",
-    textAlign: "center",
-    marginBottom: 32,
-  },
-  errorBox: {
-    backgroundColor: "#FEE2E2",
-    padding: 16,
-    borderRadius: 8,
-    marginBottom: 32,
-    width: "100%",
-  },
-  errorText: {
-    color: "#B91C1C",
-    fontFamily: "Courier",
-    fontSize: 12,
-  },
-  button: {
-    backgroundColor: "#3B82F6",
-    paddingHorizontal: 32,
-    paddingVertical: 16,
-    borderRadius: 12,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-});
