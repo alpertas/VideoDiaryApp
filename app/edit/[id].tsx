@@ -1,16 +1,18 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect } from "react";
+import { Controller, useForm } from "react-hook-form";
 import {
   ActivityIndicator,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   Text,
   TextInput,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Button } from "@/components/ui/Button";
 import { useUpdateVideoMutation, useVideoQuery } from "@/lib/queries";
@@ -102,85 +104,91 @@ export default function EditVideoScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-white dark:bg-gray-900">
-      <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
-        <View className="p-6">
-          <Text className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            Edit Video Details
-          </Text>
-          <Text className="text-gray-600 dark:text-gray-400 mb-6">
-            Update the name and description of your video diary.
-          </Text>
-
-          {/* Name Input */}
-          <View className="mb-4">
-            <Text className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-              Name *
+      <KeyboardAvoidingView
+        className="flex-1"
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={100}
+      >
+        <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
+          <View className="p-6">
+            <Text className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+              Edit Video Details
             </Text>
-            <Controller
-              control={control}
-              name="name"
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white px-4 py-3 rounded-lg"
-                  placeholder="Enter video name"
-                  placeholderTextColor="#9CA3AF"
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                />
-              )}
-            />
-            {errors.name && (
-              <Text className="text-red-500 text-sm mt-1">
-                {errors.name.message}
+            <Text className="text-gray-600 dark:text-gray-400 mb-6">
+              Update the name and description of your video diary.
+            </Text>
+
+            {/* Name Input */}
+            <View className="mb-4">
+              <Text className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                Name *
               </Text>
-            )}
-          </View>
-
-          {/* Description Input */}
-          <View className="mb-6">
-            <Text className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-              Description
-            </Text>
-            <Controller
-              control={control}
-              name="description"
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white px-4 py-3 rounded-lg h-32"
-                  placeholder="Enter description (optional)"
-                  placeholderTextColor="#9CA3AF"
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                  multiline
-                  textAlignVertical="top"
-                />
+              <Controller
+                control={control}
+                name="name"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white px-4 py-3 rounded-lg"
+                    placeholder="Enter video name"
+                    placeholderTextColor="#9CA3AF"
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                  />
+                )}
+              />
+              {errors.name && (
+                <Text className="text-red-500 text-sm mt-1">
+                  {errors.name.message}
+                </Text>
               )}
-            />
-          </View>
+            </View>
 
-          {/* Action Buttons */}
-          <View className="flex-row gap-3">
-            <View className="flex-1">
-              <Button
-                title="Cancel"
-                onPress={handleCancel}
-                variant="secondary"
-                disabled={updateVideoMutation.isPending}
+            {/* Description Input */}
+            <View className="mb-6">
+              <Text className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                Description
+              </Text>
+              <Controller
+                control={control}
+                name="description"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white px-4 py-3 rounded-lg h-32"
+                    placeholder="Enter description (optional)"
+                    placeholderTextColor="#9CA3AF"
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                    multiline
+                    textAlignVertical="top"
+                  />
+                )}
               />
             </View>
-            <View className="flex-1">
-              <Button
-                title="Save Changes"
-                onPress={handleSubmit(onSubmit)}
-                variant="primary"
-                loading={updateVideoMutation.isPending}
-              />
+
+            {/* Action Buttons */}
+            <View className="flex-row gap-3">
+              <View className="flex-1">
+                <Button
+                  title="Cancel"
+                  onPress={handleCancel}
+                  variant="secondary"
+                  disabled={updateVideoMutation.isPending}
+                />
+              </View>
+              <View className="flex-1">
+                <Button
+                  title="Save Changes"
+                  onPress={handleSubmit(onSubmit)}
+                  variant="primary"
+                  loading={updateVideoMutation.isPending}
+                />
+              </View>
             </View>
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
