@@ -3,7 +3,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Alert } from 'react-native';
+import { Alert, Linking } from 'react-native';
 
 import i18n from '@/lib/i18n';
 import { useAddVideoMutation } from '@/lib/queries';
@@ -52,7 +52,16 @@ export function useAddVideoWizard() {
         await ImagePicker.requestMediaLibraryPermissionsAsync();
 
       if (!permissionResult.granted) {
-        Alert.alert(i18n.t('add.permissionTitle'), i18n.t('add.permissionMsg'));
+        Alert.alert(i18n.t('add.permissionTitle'), i18n.t('add.permissionMsg'), [
+          {
+            text: i18n.t('common.cancel'),
+            style: 'cancel',
+          },
+          {
+            text: i18n.t('add.openSettings'),
+            onPress: () => Linking.openSettings(),
+          },
+        ]);
         return;
       }
 

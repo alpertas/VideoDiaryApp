@@ -58,6 +58,7 @@
     "videoTooShortMsg": "Please select a video that is at least %{duration} seconds long.",
     "permissionTitle": "Permission Required",
     "permissionMsg": "Please allow access to your photo library to select videos.",
+    "openSettings": "Open Settings",
     "loadError": "Failed to load video. Please try again.",
     "successMsg": "Video diary created successfully!"
   },

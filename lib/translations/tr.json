@@ -58,6 +58,7 @@
     "videoTooShortMsg": "Lütfen en az %{duration} saniye uzunluğunda bir video seçin.",
     "permissionTitle": "İzin Gerekli",
     "permissionMsg": "Video seçmek için lütfen galeri erişimine izin verin.",
+    "openSettings": "Ayarları Aç",
     "loadError": "Video yüklenemedi. Lütfen tekrar deneyin.",
     "successMsg": "Video günlüğü başarıyla oluşturuldu!"
   },
