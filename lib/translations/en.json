@@ -65,5 +65,12 @@
     "notFoundTitle": "Video Not Found",
     "notFoundMsg": "This video may have been deleted.",
     "noDesc": "No description provided"
+  },
+  "edit": {
+    "title": "Edit Video Details",
+    "subtitle": "Update the name and description of your video diary.",
+    "saveChanges": "Save Changes",
+    "updateSuccess": "Video updated successfully!",
+    "updateError": "Failed to update video"
   }
 }

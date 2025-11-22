@@ -65,5 +65,12 @@
     "notFoundTitle": "Video Bulunamadı",
     "notFoundMsg": "Bu video silinmiş olabilir.",
     "noDesc": "Açıklama girilmemiş"
+  },
+  "edit": {
+    "title": "Video Detaylarını Düzenle",
+    "subtitle": "Video günlüğünüzün adını ve açıklamasını güncelleyin.",
+    "saveChanges": "Değişiklikleri Kaydet",
+    "updateSuccess": "Video başarıyla güncellendi!",
+    "updateError": "Video güncellenemedi"
   }
 }

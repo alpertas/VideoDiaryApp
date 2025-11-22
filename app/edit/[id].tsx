@@ -8,6 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '@/components/ui/Button';
 import { KeyboardSafeView } from '@/components/ui/KeyboardSafeView';
 import { Loader } from '@/components/ui/Loader';
+import i18n from '@/lib/i18n';
 import { useUpdateVideoMutation, useVideoQuery } from '@/lib/queries';
 import {
   videoMetadataSchema,
@@ -56,13 +57,13 @@ export default function EditVideoScreen() {
       },
       {
         onSuccess: () => {
-          Alert.alert('Success', 'Video updated successfully!');
+          Alert.alert(i18n.t('common.success'), i18n.t('edit.updateSuccess'));
           router.back();
         },
         onError: (error) => {
           Alert.alert(
-            'Error',
-            error instanceof Error ? error.message : 'Failed to update video'
+            i18n.t('common.error'),
+            error instanceof Error ? error.message : i18n.t('edit.updateError')
           );
         },
       }
@@ -86,7 +87,10 @@ export default function EditVideoScreen() {
       <SafeAreaView className="flex-1 bg-white dark:bg-gray-900">
         <View className="flex-1 items-center justify-center px-8">
           <Text className="text-xl font-bold text-gray-900 dark:text-white">
-            Video Not Found
+            {i18n.t('details.notFoundTitle')}
+          </Text>
+          <Text className="text-gray-600 dark:text-gray-400 mt-2">
+            {i18n.t('details.notFoundMsg')}
           </Text>
         </View>
       </SafeAreaView>
@@ -99,16 +103,16 @@ export default function EditVideoScreen() {
         <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
           <View className="p-6">
             <Text className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-              Edit Video Details
+              {i18n.t('edit.title')}
             </Text>
             <Text className="text-gray-600 dark:text-gray-400 mb-6">
-              Update the name and description of your video diary.
+              {i18n.t('edit.subtitle')}
             </Text>
 
             {/* Name Input */}
             <View className="mb-4">
               <Text className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                Name *
+                {i18n.t('add.nameLabel')}
               </Text>
               <Controller
                 control={control}
@@ -116,7 +120,7 @@ export default function EditVideoScreen() {
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
                     className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white px-4 py-3 rounded-lg"
-                    placeholder="Enter video name"
+                    placeholder={i18n.t('add.namePlaceholder')}
                     placeholderTextColor="#9CA3AF"
                     onBlur={onBlur}
                     onChangeText={onChange}
@@ -134,7 +138,7 @@ export default function EditVideoScreen() {
             {/* Description Input */}
             <View className="mb-6">
               <Text className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                Description
+                {i18n.t('add.descLabel')}
               </Text>
               <Controller
                 control={control}
@@ -142,7 +146,7 @@ export default function EditVideoScreen() {
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
                     className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white px-4 py-3 rounded-lg h-32"
-                    placeholder="Enter description (optional)"
+                    placeholder={i18n.t('add.descPlaceholder')}
                     placeholderTextColor="#9CA3AF"
                     onBlur={onBlur}
                     onChangeText={onChange}
@@ -158,7 +162,7 @@ export default function EditVideoScreen() {
             <View className="flex-row gap-3">
               <View className="flex-1">
                 <Button
-                  title="Cancel"
+                  title={i18n.t('common.cancel')}
                   onPress={handleCancel}
                   variant="secondary"
                   disabled={updateVideoMutation.isPending}
@@ -166,7 +170,7 @@ export default function EditVideoScreen() {
               </View>
               <View className="flex-1">
                 <Button
-                  title="Save Changes"
+                  title={i18n.t('edit.saveChanges')}
                   onPress={handleSubmit(onSubmit)}
                   variant="primary"
                   loading={updateVideoMutation.isPending}
