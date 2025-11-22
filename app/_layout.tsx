@@ -10,6 +10,9 @@ import "../global.css";
 
 import { useColorScheme } from "@/hooks/use-color-scheme";
 
+import { useUIStore } from "@/store/ui-store";
+import { useEffect } from "react";
+
 // Create QueryClient instance with default options
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -23,6 +26,11 @@ const queryClient = new QueryClient({
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const { isReady, error } = useAppLoading();
+  const { themeMode } = useUIStore();
+
+  useEffect(() => {
+    console.log("🎨 Current Theme Mode (Zustand):", themeMode);
+  }, [themeMode]);
 
   // Show loading screen while app is initializing
   if (!isReady) {
