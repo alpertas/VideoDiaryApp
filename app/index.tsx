@@ -3,7 +3,7 @@ import { FlashList, type FlashListRef } from "@shopify/flash-list";
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import React, { useEffect } from "react";
-import { ActivityIndicator, Alert, Pressable, Text, TextInput, View } from "react-native";
+import { ActivityIndicator, Alert, Pressable, Text, View } from "react-native";
 import {
   GestureHandlerRootView,
   Swipeable,
@@ -18,6 +18,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { SearchBar } from "@/components/ui/SearchBar";
 import { VideoListItem } from "@/components/video/VideoListItem";
 import i18n from "@/lib/i18n";
 import { useDeleteVideoMutation, useVideosQuery } from "@/lib/queries";
@@ -203,21 +204,7 @@ export default function MainScreen() {
         {/* Fixed Header with Search and Sort */}
         <View className="px-4 py-2 mb-2 bg-gray-50 dark:bg-gray-950 z-10">
           <View className="flex-row gap-2">
-            <View className="flex-1 bg-white dark:bg-gray-800 rounded-lg flex-row items-center px-3 border border-gray-200 dark:border-gray-700 h-12">
-              <Ionicons name="search" size={20} color="#9CA3AF" />
-              <TextInput
-                className="flex-1 py-3 px-2 text-gray-900 dark:text-white"
-                placeholder={i18n.t("main.searchPlaceholder")}
-                placeholderTextColor="#9CA3AF"
-                value={searchQuery}
-                onChangeText={setSearchQuery}
-              />
-              {searchQuery.length > 0 && (
-                <Pressable onPress={() => setSearchQuery("")}>
-                  <Ionicons name="close-circle" size={20} color="#9CA3AF" />
-                </Pressable>
-              )}
-            </View>
+            <SearchBar />
             <Pressable
               onPress={toggleSortOrder}
               className="bg-white dark:bg-gray-800 px-4 rounded-lg flex-row gap-2 justify-center items-center border border-gray-200 dark:border-gray-700 active:bg-gray-100 dark:active:bg-gray-700 h-12"
