@@ -84,7 +84,7 @@ export function VideoListItem({
               {video.name}
             </Text>
 
-            {video.description && (
+            {video.description && video.description.trim() !== '' && (
               <Text
                 className="text-sm text-gray-600 dark:text-gray-400 mb-2"
                 numberOfLines={2}
