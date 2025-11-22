@@ -83,7 +83,7 @@ export function VideoPlayer({
     if (player && startTime !== undefined) {
       try {
         player.currentTime = startTime / 1000;
-      } catch (error) {
+      } catch {
         // Silently ignore seek errors
       }
     }
@@ -96,7 +96,7 @@ export function VideoPlayer({
         if (player && player.playing) {
           player.pause();
         }
-      } catch (error) {
+      } catch {
         // Silently ignore cleanup errors
       }
     };

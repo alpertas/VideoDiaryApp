@@ -74,10 +74,6 @@ export function VideoTrimmer({
     return positionToTime(endPosition.value);
   });
 
-  const liveDuration = useDerivedValue(() => {
-    return liveEndTime.value - liveStartTime.value;
-  });
-
   // Update state in real-time as handles move
   useAnimatedReaction(
     () => {
@@ -105,14 +101,12 @@ export function VideoTrimmer({
   // Start handle gesture - move start handle independently with min/max constraints
   const startHandleGesture = Gesture.Pan()
     .onBegin(() => {
-      ("worklet");
       savedStart.value = startPosition.value;
       savedEnd.value = endPosition.value;
       // Subtle scale up on press
       startHandleScale.value = withTiming(1.05, { duration: 100 });
     })
     .onUpdate((event) => {
-      "worklet";
       const minStartPosition = Math.max(
         HANDLE_WIDTH / 2,
         endPosition.value -
@@ -128,7 +122,6 @@ export function VideoTrimmer({
       startPosition.value = newPosition;
     })
     .onEnd(() => {
-      ("worklet");
       const newStartTime = positionToTime(startPosition.value);
       const newEndTime = positionToTime(endPosition.value);
       runOnJS(updateTrimRange)(newStartTime, newEndTime);
@@ -141,14 +134,12 @@ export function VideoTrimmer({
   // End handle gesture - move end handle independently with min/max constraints
   const endHandleGesture = Gesture.Pan()
     .onBegin(() => {
-      ("worklet");
       savedStart.value = startPosition.value;
       savedEnd.value = endPosition.value;
       // Subtle scale up on press
       endHandleScale.value = withTiming(1.05, { duration: 100 });
     })
     .onUpdate((event) => {
-      "worklet";
       const minEndPosition =
         startPosition.value +
         (MIN_DURATION / videoDuration) * USABLE_TIMELINE_WIDTH;
@@ -164,7 +155,6 @@ export function VideoTrimmer({
       endPosition.value = newPosition;
     })
     .onEnd(() => {
-      ("worklet");
       const newStartTime = positionToTime(startPosition.value);
       const newEndTime = positionToTime(endPosition.value);
       runOnJS(updateTrimRange)(newStartTime, newEndTime);
@@ -177,12 +167,10 @@ export function VideoTrimmer({
   // Center pan gesture - drag entire selection maintaining duration
   const centerPanGesture = Gesture.Pan()
     .onBegin(() => {
-      "worklet";
       savedStart.value = startPosition.value;
       savedEnd.value = endPosition.value;
     })
     .onUpdate((event) => {
-      "worklet";
       const selectionWidth = savedEnd.value - savedStart.value;
       let newStart = savedStart.value + event.translationX;
 
@@ -196,7 +184,6 @@ export function VideoTrimmer({
       endPosition.value = newStart + selectionWidth;
     })
     .onEnd(() => {
-      "worklet";
       const newStartTime = positionToTime(startPosition.value);
       const newEndTime = positionToTime(endPosition.value);
       runOnJS(updateTrimRange)(newStartTime, newEndTime);
