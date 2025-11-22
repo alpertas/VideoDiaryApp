@@ -60,7 +60,11 @@
     "permissionMsg": "Video seçmek için lütfen galeri erişimine izin verin.",
     "openSettings": "Ayarları Aç",
     "loadError": "Video yüklenemedi. Lütfen tekrar deneyin.",
-    "successMsg": "Video günlüğü başarıyla oluşturuldu!"
+    "successMsg": "Video günlüğü başarıyla oluşturuldu!",
+    "dragHandles": "1-5 saniyelik bölüm seçmek için tutamaçları sürükleyin",
+    "trimStart": "Başlangıç",
+    "trimDuration": "Süre",
+    "trimEnd": "Bitiş"
   },
   "details": {
     "notFoundTitle": "Video Bulunamadı",

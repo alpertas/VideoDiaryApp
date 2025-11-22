@@ -60,7 +60,11 @@
     "permissionMsg": "Please allow access to your photo library to select videos.",
     "openSettings": "Open Settings",
     "loadError": "Failed to load video. Please try again.",
-    "successMsg": "Video diary created successfully!"
+    "successMsg": "Video diary created successfully!",
+    "dragHandles": "Drag handles to select 1-5 second segment",
+    "trimStart": "Start",
+    "trimDuration": "Duration",
+    "trimEnd": "End"
   },
   "details": {
     "notFoundTitle": "Video Not Found",

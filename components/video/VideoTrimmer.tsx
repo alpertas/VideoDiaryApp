@@ -9,6 +9,8 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
+
+import i18n from '@/lib/i18n';
 import { VideoPlayer } from './VideoPlayer';
 
 interface VideoTrimmerProps {
@@ -225,7 +227,7 @@ export function VideoTrimmer({
       {/* Timeline with Draggable Handles */}
       <View className="mt-2 px-10">
         <Text className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">
-          Drag handles to select 1-5 second segment
+          {i18n.t('add.dragHandles')}
         </Text>
 
         <View
@@ -321,13 +323,13 @@ export function VideoTrimmer({
         {/* Time Display */}
         <View className="flex-row justify-between mt-3">
           <Text className="text-sm text-gray-600 dark:text-gray-400">
-            Start: {(startTime / 1000).toFixed(1)}s
+            {i18n.t('add.trimStart')}: {(startTime / 1000).toFixed(1)}s
           </Text>
           <Text className="text-sm font-semibold text-blue-600">
-            Duration: {((endTime - startTime) / 1000).toFixed(1)}s
+            {i18n.t('add.trimDuration')}: {((endTime - startTime) / 1000).toFixed(1)}s
           </Text>
           <Text className="text-sm text-gray-600 dark:text-gray-400">
-            End: {(endTime / 1000).toFixed(1)}s
+            {i18n.t('add.trimEnd')}: {(endTime / 1000).toFixed(1)}s
           </Text>
         </View>
       </View>
