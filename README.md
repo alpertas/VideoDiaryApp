@@ -431,12 +431,13 @@ const handleSelectVideo = async () => {
 
 ---
 
+
 ## 📱 Uygulama Önizlemesi
 
 | Ana Akış (Core Flow) | Tema (Dark & Light Mode) |
 | :---: | :---: |
-| ![Core Flow](link_to_your_gif_1.gif) | ![Theme](https://github.com/user-attachments/assets/0685a236-6829-4e63-b7f7-9f72743913d4) |
-| *Video seçimi, kırpma ve kaydetme* | *Dark Mode desteği* |
+| ![Core Flow](https://github.com/user-attachments/assets/f1c905fc-046f-4ee9-b32f-da19b58b5d8a) | ![Theme](https://github.com/user-attachments/assets/0685a236-6829-4e63-b7f7-9f72743913d4) |
+| *Video seçme, kırpma, kaydetme, arama, sıralama, güncelleme, silme* | *Dark Mode desteği* |
 
 ## 🎓 Geliştirici Notları
 
