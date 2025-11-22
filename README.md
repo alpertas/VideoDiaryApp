@@ -1,6 +1,11 @@
 # 📱 React Native Case Study - Video Diary App
 
 ---
+> 🚀 **Hızlı Bakış:**
+> Bu repo, Video Diary uygulamasının **tüm zorunlu isterlerini** ve **tüm bonus özelliklerini** (SQLite, Edit Page, Animations) eksiksiz kapsar.
+>
+> Proje ayrıca; **Gelişmiş Arama ve Sıralama**, **Dark/Light Tema Desteği**, **Çoklu Dil (i18n)** ve veri kaybını önleyen **Akıllı Dosya Yönetimi** (File Persistence) gibi ekstra yetkinliklerle zenginleştirilmiştir.
+---
 
 ## 🎯 Proje Özeti
 
@@ -224,46 +229,37 @@ Detaylı bilgi için: `lib/translations/README.md`
 
 ---
 
-## 🤖 AI ile Geliştirme Süreci
+### 🤖 AI Kullanımı ve Geliştirme Partnerliği
 
-Bu proje, modern yazılım geliştirme pratiklerinin bir parçası olarak **AI destekli geliştirme** yaklaşımı ile oluşturulmuştur.
-
-### AI Kullanımı
-
-Proje boyunca Google Gemini AI aşağıdaki alanlarda aktif olarak kullanılmıştır:
+Bu proje, **Google Gemini 3 Pro** ve **Claude 4.5 Sonnet** modelleri ile aktif bir "Pair Programming" (Eşli Programlama) süreci yürütülerek geliştirilmiştir. AI, sadece kod üretimi için değil, mimari kararlar ve refactoring stratejileri için bir **Teknik Lider (Tech Lead)** rolü üstlenmiştir.
 
 #### 🎯 Kod Kalitesi ve Mimari
+- **Code Splitting & Composition:** Monolitik yapıdaki "God Component"ların (özellikle `add.tsx` sihirbazı), yönetilebilir alt bileşenlere (`Step1`, `Step2` vb.) ve custom hook'lara (`useAddVideoWizard`) bölünmesi.
+- **TypeScript Type Safety:** Tüm component'ler ve hook'lar için katı (strict) generic type tanımlamaları.
+- **Code Review & Optimization:** `any` type kullanımı gibi anti-pattern'lerin tespiti ve `FlashList` render performansının `useCallback` ile optimize edilmesi.
+- **Refactoring:** Fire-and-forget veri yükleme modelinden, kontrollü ve güvenli "Merkezi Loading State" yapısına geçiş.
 
-- **TypeScript Type Safety:** Tüm component'ler ve hook'lar için generic type tanımlamaları
-- **Best Practices:** React Hook patterns, custom hook design, error handling strategies
-- **Code Review:** `any` type kullanımı gibi anti-pattern'lerin tespit edilip düzeltilmesi
-- **Refactoring:** FlashList v2 migration, fire-and-forget pattern'den kontrollu loading'e geçiş
-
-#### 📚 Dokümantasyon
-
-- **Inline Comments:** Karmaşık logic'ler için açıklayıcı JSDoc yorumları
-- **README Structure:** Kapsamlı ve yapılandırılmış proje dokümantasyonu
-- **Translation Files:** JSON tabanlı i18n sistemi ve dokümantasyonu
+#### 📚 Dokümantasyon ve İletişim
+- **Interactive Documentation:** Proje özelliklerini kanıtlayan GIF'lerin ve teknik notların README'ye entegrasyonu.
+- **Inline Comments:** Karmaşık iş mantıkları (Business Logic) için açıklayıcı JSDoc yorumları.
+- **Translation Strategy:** Koddan ayrıştırılmış, ölçeklenebilir JSON tabanlı i18n sistemi.
 
 #### 🏗️ Mimari Kararlar
+- **Separation of Concerns:** UI (Görünüm) ve Logic (Mantık) katmanlarının Custom Hook'lar aracılığıyla tamamen ayrıştırılması.
+- **Error Boundary Pattern:** Beklenmedik çökme durumları için React Error Boundary stratejisi.
+- **Loading State Management:** Uygulama açılış güvenliğini sağlayan merkezi orkestrasyon.
 
-- **Loading State Management:** Merkezi loading orchestration sistemi tasarımı
-- **Error Boundary Pattern:** React Error Boundary implementation strategy
-- **Separation of Concerns:** i18n metinlerinin JSON'a ayrılması
+#### ⚙️ Süreç Yönetimi ve DevOps
+- **Git Strategy:** Projenin gelişim aşamalarını yansıtan, "faz-faz" (phase-by-phase) ve anlamlı commit geçmişi yönetimi.
+- **Asset Configuration:** Android Adaptive Icon ve Splash Screen yapılandırmasındaki karmaşık `app.config.ts` ayarlarının yönetimi.
+- **Mock Data Generation:** Test süreçleri için gerçekçi veri setlerinin oluşturulması.
 
-#### 🔍 Problem Solving
+### 💎 AI İle Elde Edilen Katma Değer
 
-- **Debugging:** TypeScript type errors, FlashList v2 API değişiklikleri
-- **Performance:** Splash screen timing, database initialization optimization
-- **UX Improvements:** Loading states, error messaging, timeout mechanisms
-
-### AI İle Elde Edilen Faydalar
-
-✅ **Hız:** Boilerplate kod yazımında 3-4x hızlanma  
-✅ **Kalite:** Consistent code style ve naming conventions  
-✅ **Güvenlik:** Edge case'lerin erken tespit edilmesi (timeout, error handling)  
-✅ **Dokümantasyon:** Comprehensive ve güncel dokümantasyon  
-✅ **Learning:** Best practice'ler ve modern pattern'lerin öğrenilmesi
+✅ **Hız:** Boilerplate kod yazımında 3-4x hızlanma.
+✅ **Mimari Derinlik:** "Junior" hataların (prop drilling, re-render issues) proaktif olarak engellenmesi.
+✅ **Güvenlik:** Edge case'lerin (timeout, permission denial) erken tespiti.
+✅ **Öğrenme:** Modern React Native pattern'lerinin (Zustand + Query + Hook kombinasyonu) en iyi uygulama yöntemleriyle öğrenilmesi.
 
 > **Not:** AI bir araç olarak kullanılmıştır. Tüm kod ve mimari kararlar incelendi, anlaşıldı ve gerektiğinde modifiye edildi. AI suggestion'ları körü körüne uygulanmadı, her değişiklik proje gereksinimlerine göre değerlendirildi.
 
@@ -436,14 +432,15 @@ const handleSelectVideo = async () => {
 
 | Ana Akış (Core Flow) | Tema (Dark & Light Mode) |
 | :---: | :---: |
-| ![Core Flow](https://github.com/user-attachments/assets/6cb0f23f-0560-455c-8d0b-857fcd12a7f7) | ![Theme](https://github.com/user-attachments/assets/0685a236-6829-4e63-b7f7-9f72743913d4) |
-| *Video seçme, kırpma, kaydetme, arama, sıralama, güncelleme, silme* | *Dark Mode desteği* |
+| <img src="https://github.com/user-attachments/assets/6cb0f23f-0560-455c-8d0b-857fcd12a7f7" width="280" /> | <img src="https://github.com/user-attachments/assets/0685a236-6829-4e63-b7f7-9f72743913d4" width="280" /> |
+| *Video seçme, kırpma, kaydetme, arama...* | *Dark Mode desteği* |
 
 ## ✨ Özellik Detayları
 
 ### 🌍 Çoklu Dil ve Yerelleştirme
 Uygulama, cihazın diline göre otomatik olarak **Türkçe** veya **İngilizce** başlar.
-![Simulator Screen Recording - iPhone 16 Plus - 2025-11-23 at 01 35 10](https://github.com/user-attachments/assets/9828f0f2-45e9-434d-af76-6d6c7e2cd68c)
+
+<img src="https://github.com/user-attachments/assets/9828f0f2-45e9-434d-af76-6d6c7e2cd68c" width="280" />
 
 > ℹ️ **Önizleme Notları:**
 > * **Görüntü Kalitesi:** GIF dosyaları, GitHub üzerinde hızlı yüklenebilmesi için sıkıştırılmış, FPS değerleri düşürülmüş ve oynatma hızı artırılmıştır.
