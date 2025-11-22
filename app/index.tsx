@@ -56,6 +56,12 @@ export default function MainScreen() {
     };
   }, [fabOpacity]);
 
+  useEffect(() => {
+    if (videos && videos.length > 0) {
+      flashListRef.current?.scrollToOffset({ offset: 0, animated: true });
+    }
+  }, [videos?.length]);
+
   const fabAnimatedStyle = useAnimatedStyle(() => ({
     opacity: fabOpacity.value,
   }));
@@ -170,6 +176,7 @@ export default function MainScreen() {
               paddingTop: 12,
               paddingBottom: 100,
               paddingHorizontal: 16,
+              height: "100%"
             }}
           />
         )}
