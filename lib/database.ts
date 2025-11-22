@@ -33,18 +33,25 @@ export async function initDatabase(): Promise<void> {
 }
 
 /**
- * Get all videos ordered by creation date (newest first).
+ * Get all videos ordered by creation date with optional filtering.
  */
-export async function getAllVideos(): Promise<Video[]> {
-  if (!db) throw new Error('Database not initialized');
-  
+export async function getAllVideos(
+  searchQuery: string = "",
+  sortOrder: "asc" | "desc" = "desc"
+): Promise<Video[]> {
+  if (!db) throw new Error("Database not initialized");
+
   try {
-    const result = await db.getAllAsync<Video>(
-      'SELECT * FROM videos ORDER BY createdAt DESC'
-    );
+    const query = `
+      SELECT * FROM videos 
+      WHERE name LIKE ? 
+      ORDER BY createdAt ${sortOrder}
+    `;
+
+    const result = await db.getAllAsync<Video>(query, [`%${searchQuery}%`]);
     return result;
   } catch (error) {
-    console.error('Failed to fetch videos:', error);
+    console.error("Failed to fetch videos:", error);
     throw error;
   }
 }
