@@ -436,8 +436,19 @@ const handleSelectVideo = async () => {
 
 | Ana Akış (Core Flow) | Tema (Dark & Light Mode) |
 | :---: | :---: |
-| ![Core Flow](https://github.com/user-attachments/assets/f1c905fc-046f-4ee9-b32f-da19b58b5d8a) | ![Theme](https://github.com/user-attachments/assets/0685a236-6829-4e63-b7f7-9f72743913d4) |
+| ![Core Flow](https://github.com/user-attachments/assets/6cb0f23f-0560-455c-8d0b-857fcd12a7f7) | ![Theme](https://github.com/user-attachments/assets/0685a236-6829-4e63-b7f7-9f72743913d4) |
 | *Video seçme, kırpma, kaydetme, arama, sıralama, güncelleme, silme* | *Dark Mode desteği* |
+
+## ✨ Özellik Detayları
+
+### 🌍 Çoklu Dil ve Yerelleştirme
+Uygulama, cihazın diline göre otomatik olarak **Türkçe** veya **İngilizce** başlar.
+![Simulator Screen Recording - iPhone 16 Plus - 2025-11-23 at 01 35 10](https://github.com/user-attachments/assets/9828f0f2-45e9-434d-af76-6d6c7e2cd68c)
+
+> ℹ️ **Önizleme Notları:**
+> * **Görüntü Kalitesi:** GIF dosyaları, GitHub üzerinde hızlı yüklenebilmesi için sıkıştırılmış, FPS değerleri düşürülmüş ve oynatma hızı artırılmıştır.
+> * **Düzeltme:** Dark Mode demosunda görülen "Start/Duration/End" gibi sabit (hardcoded) metinler final sürümde düzeltilmiş ve `i18n` (dil desteği) sistemine dahil edilmiştir.
+> * **Cihaz & Platform:** Proje **Android** cihazlarda da test edilmiştir. Kayıtlarda; Ana Akış ve Tema özellikleri için **Fiziksel iPhone SE 2020**, Çoklu Dil desteği gösterimi için **iPhone 16 Plus Simülatörü** kullanılmıştır.
 
 ## 🎓 Geliştirici Notları
 
