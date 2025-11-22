@@ -37,20 +37,22 @@ export function useAppLoading(): UseAppLoadingResult {
       }
     }
 
-    // Add timeout to prevent indefinite loading
+    prepare();
+  }, []);
+
+  // Separate timeout effect that depends on isReady
+  useEffect(() => {
+    if (isReady) return; // Already ready, no timeout needed
+
     const timeout = setTimeout(() => {
-      if (!isReady) {
-        const timeoutError = new Error('App initialization timeout');
-        console.error(timeoutError);
-        setError(timeoutError);
-        SplashScreen.hideAsync();
-      }
+      const timeoutError = new Error('App initialization timeout');
+      console.error(timeoutError);
+      setError(timeoutError);
+      SplashScreen.hideAsync();
     }, 10000); // 10 second timeout
 
-    prepare();
-
     return () => clearTimeout(timeout);
-  }, []);
+  }, [isReady]);
 
   return { isReady, error };
 }
