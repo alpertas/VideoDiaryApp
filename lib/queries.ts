@@ -17,14 +17,19 @@ export const queryKeys = {
   video: (id: number) => ["videos", id] as const,
 };
 
+import { useFilterStore } from "@/store/filter-store";
+
 /**
  * Fetch all videos from SQLite.
  * Data is cached and automatically refetched on invalidation.
+ * Now supports filtering and sorting via global store.
  */
 export function useVideosQuery() {
+  const { searchQuery, sortOrder } = useFilterStore();
+
   return useQuery({
-    queryKey: queryKeys.videos,
-    queryFn: () => db.getAllVideos(),
+    queryKey: [...queryKeys.videos, { searchQuery, sortOrder }],
+    queryFn: () => db.getAllVideos(searchQuery, sortOrder),
   });
 }
 
