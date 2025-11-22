@@ -1,8 +1,8 @@
-import React from "react";
-import { Text, View } from "react-native";
+import React from 'react';
+import { Text, View } from 'react-native';
 
-import { VideoTrimmer } from "@/components/video/VideoTrimmer";
-import i18n from "@/lib/i18n";
+import { VideoTrimmer } from '@/components/video/VideoTrimmer';
+import i18n from '@/lib/i18n';
 
 interface Step2TrimVideoProps {
   videoUri: string;
@@ -20,10 +20,10 @@ export function Step2TrimVideo({
   return (
     <View className="flex-1 py-4">
       <Text className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-        {i18n.t("add.step2Title")}
+        {i18n.t('add.step2Title')}
       </Text>
       <Text className="text-gray-600 dark:text-gray-400 mb-6">
-        {i18n.t("add.step2Subtitle", { duration: maxDuration / 1000 })}
+        {i18n.t('add.step2Subtitle', { duration: maxDuration / 1000 })}
       </Text>
       <VideoTrimmer
         videoUri={videoUri}

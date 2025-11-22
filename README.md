@@ -11,32 +11,32 @@
 Proje, belirtilen gereksinimlerin **tamamını** kapsamaktadır:
 
 1.  **Ana Ekran (Main Screen):**
-    *   Kırpılan videoların listelenmesi (`FlashList` ile yüksek performans).
-    *   Kalıcı veri saklama (`SQLite` + `FileSystem`).
-    *   Detay sayfasına navigasyon.
+    - Kırpılan videoların listelenmesi (`FlashList` ile yüksek performans).
+    - Kalıcı veri saklama (`SQLite` + `FileSystem`).
+    - Detay sayfasına navigasyon.
 2.  **Detay Sayfası (Details Page):**
-    *   Video oynatma ve metadata (isim, açıklama) gösterimi.
-    *   Minimalist ve odaklı UI tasarımı.
+    - Video oynatma ve metadata (isim, açıklama) gösterimi.
+    - Minimalist ve odaklı UI tasarımı.
 3.  **Kırpma Modalı (Crop Modal - 3 Adımlı Sihirbaz):**
-    *   **Adım 1:** Galeriden video seçimi (`expo-image-picker`).
-    *   **Adım 2:** 5 saniyelik aralık seçimi ve önizleme (`VideoTrimmer` bileşeni).
-    *   **Adım 3:** Metadata girişi ve doğrulama.
+    - **Adım 1:** Galeriden video seçimi (`expo-image-picker`).
+    - **Adım 2:** 5 saniyelik aralık seçimi ve önizleme (`VideoTrimmer` bileşeni).
+    - **Adım 3:** Metadata girişi ve doğrulama.
 4.  **Video Kırpma İşlemi:**
-    *   `expo-trim-video` kütüphanesi kullanılarak asenkron kırpma.
-    *   `Tanstack Query` (useMutation) ile işlem yönetimi.
+    - `expo-trim-video` kütüphanesi kullanılarak asenkron kırpma.
+    - `Tanstack Query` (useMutation) ile işlem yönetimi.
 
 ### 🌟 Bonus Özellikler (Tamamlandı)
 
-*   ✅ **Düzenleme Sayfası (Edit Page):** Videoların isim ve açıklamalarını güncellemek için form yapısı.
-*   ✅ **Expo SQLite:** Yapılandırılmış ve kalıcı veri depolama için `AsyncStorage` yerine `SQLite` tercih edildi.
-*   ✅ **React Native Reanimated:** Akıcı liste animasyonları ve etkileşimler için entegre edildi.
-*   ✅ **Zod Validasyonu:** Form girişleri (isim, açıklama) için katı şema kontrolü.
-*   ✅ **Merkezi Loading State Yönetimi:** Database initialization ve splash screen kontrolü için `useAppLoading` hook'u ile profesyonel uygulama başlatma deneyimi.
-*   ✅ **Çoklu Dil Desteği (i18n):** Türkçe ve İngilizce dil desteği, JSON tabanlı çeviri sistemi.
-*   ✅ **Error Boundary:** React Error Boundary ile runtime hataların yakalanması ve kullanıcı dostu hata mesajları (i18n ve NativeWind ile entegre).
-*   ✅ **Environment Variables:** `.env` dosyası ile yapılandırma yönetimi ve farklı ortamlar için destek.
-*   ✅ **Clean Architecture:** Custom hooks (`useAddVideoWizard`, `useVideoList`) ile business logic tamamen UI'dan ayrıştırıldı.
-*   ✅ **Dark Mode Support:** Status bar renkleri dark mode'a göre otomatik ayarlanır (Zustand + system preferences).
+- ✅ **Düzenleme Sayfası (Edit Page):** Videoların isim ve açıklamalarını güncellemek için form yapısı.
+- ✅ **Expo SQLite:** Yapılandırılmış ve kalıcı veri depolama için `AsyncStorage` yerine `SQLite` tercih edildi.
+- ✅ **React Native Reanimated:** Akıcı liste animasyonları ve etkileşimler için entegre edildi.
+- ✅ **Zod Validasyonu:** Form girişleri (isim, açıklama) için katı şema kontrolü.
+- ✅ **Merkezi Loading State Yönetimi:** Database initialization ve splash screen kontrolü için `useAppLoading` hook'u ile profesyonel uygulama başlatma deneyimi.
+- ✅ **Çoklu Dil Desteği (i18n):** Türkçe ve İngilizce dil desteği, JSON tabanlı çeviri sistemi.
+- ✅ **Error Boundary:** React Error Boundary ile runtime hataların yakalanması ve kullanıcı dostu hata mesajları (i18n ve NativeWind ile entegre).
+- ✅ **Environment Variables:** `.env` dosyası ile yapılandırma yönetimi ve farklı ortamlar için destek.
+- ✅ **Clean Architecture:** Custom hooks (`useAddVideoWizard`, `useVideoList`) ile business logic tamamen UI'dan ayrıştırıldı.
+- ✅ **Dark Mode Support:** Status bar renkleri dark mode'a göre otomatik ayarlanır (Zustand + system preferences).
 
 ---
 
@@ -44,19 +44,19 @@ Proje, belirtilen gereksinimlerin **tamamını** kapsamaktadır:
 
 Vaka çalışmasında talep edilen teknolojilerin tamamı kullanılmıştır:
 
-| Kategori | Teknoloji | Kullanım Amacı |
-|----------|-----------|----------------|
-| **Core** | **Expo (Managed)** | Proje altyapısı ve geliştirme ortamı. |
-| **Navigasyon** | **Expo Router** | Dosya tabanlı, modern navigasyon yapısı. |
-| **State** | **Zustand** | Global UI durumu yönetimi. |
-| **Async State** | **Tanstack Query** | Veri çekme, önbellekleme ve asenkron işlem (kırpma) yönetimi. |
-| **Veritabanı** | **Expo SQLite** | Video metadata'sının kalıcı ve güvenli saklanması. |
-| **Video** | **expo-trim-video** | Video işleme ve kırpma mantığı. |
-| **Oynatıcı** | **Expo Video** | Performanslı video oynatma bileşeni. |
-| **Stil** | **NativeWind** | Tailwind CSS tabanlı hızlı ve tutarlı stillendirme. |
-| **Animasyon** | **Reanimated** | Liste girişleri ve UI etkileşimleri. |
-| **Validasyon** | **Zod** | Form verilerinin doğrulanması. |
-| **i18n** | **i18n-js** | Çoklu dil desteği (Türkçe/İngilizce). |
+| Kategori        | Teknoloji           | Kullanım Amacı                                                |
+| --------------- | ------------------- | ------------------------------------------------------------- |
+| **Core**        | **Expo (Managed)**  | Proje altyapısı ve geliştirme ortamı.                         |
+| **Navigasyon**  | **Expo Router**     | Dosya tabanlı, modern navigasyon yapısı.                      |
+| **State**       | **Zustand**         | Global UI durumu yönetimi.                                    |
+| **Async State** | **Tanstack Query**  | Veri çekme, önbellekleme ve asenkron işlem (kırpma) yönetimi. |
+| **Veritabanı**  | **Expo SQLite**     | Video metadata'sının kalıcı ve güvenli saklanması.            |
+| **Video**       | **expo-trim-video** | Video işleme ve kırpma mantığı.                               |
+| **Oynatıcı**    | **Expo Video**      | Performanslı video oynatma bileşeni.                          |
+| **Stil**        | **NativeWind**      | Tailwind CSS tabanlı hızlı ve tutarlı stillendirme.           |
+| **Animasyon**   | **Reanimated**      | Liste girişleri ve UI etkileşimleri.                          |
+| **Validasyon**  | **Zod**             | Form verilerinin doğrulanması.                                |
+| **i18n**        | **i18n-js**         | Çoklu dil desteği (Türkçe/İngilizce).                         |
 
 ---
 
@@ -65,25 +65,30 @@ Vaka çalışmasında talep edilen teknolojilerin tamamı kullanılmıştır:
 Proje geliştirilirken vaka çalışmasındaki "Key Considerations" maddelerine özel önem verilmiştir:
 
 ### 1. Ölçeklenebilirlik (Scalability)
-*   **Bileşen Mimarisi:** `VideoPlayer`, `VideoListItem`, `VideoTrimmer` gibi bileşenler tekrar kullanılabilir şekilde ayrıştırıldı.
-*   **Veri Katmanı:** `lib/queries.ts` ve `lib/database.ts` ile veri erişim mantığı UI'dan tamamen izole edildi. Bu sayede veritabanı veya API değişikliği UI'ı etkilemez.
+
+- **Bileşen Mimarisi:** `VideoPlayer`, `VideoListItem`, `VideoTrimmer` gibi bileşenler tekrar kullanılabilir şekilde ayrıştırıldı.
+- **Veri Katmanı:** `lib/queries.ts` ve `lib/database.ts` ile veri erişim mantığı UI'dan tamamen izole edildi. Bu sayede veritabanı veya API değişikliği UI'ı etkilemez.
 
 ### 2. Performans (Performance)
-*   **FlashList:** Uzun listelerde dahi 60 FPS kaydırma deneyimi için `FlatList` yerine `FlashList` kullanıldı.
-*   **Thumbnail Stratejisi:** Listede doğrudan video oynatıcıları render etmek yerine, oluşturulan thumbnail resimleri (`<Image>`) gösterilerek bellek kullanımı minimize edildi.
-*   **Tanstack Query:** Veri çekme ve güncelleme işlemleri optimize edildi, gereksiz render'ların önüne geçildi.
+
+- **FlashList:** Uzun listelerde dahi 60 FPS kaydırma deneyimi için `FlatList` yerine `FlashList` kullanıldı.
+- **Thumbnail Stratejisi:** Listede doğrudan video oynatıcıları render etmek yerine, oluşturulan thumbnail resimleri (`<Image>`) gösterilerek bellek kullanımı minimize edildi.
+- **Tanstack Query:** Veri çekme ve güncelleme işlemleri optimize edildi, gereksiz render'ların önüne geçildi.
 
 ### 3. Kullanılabilirlik (Usability)
-*   **Adım Adım Sihirbaz:** Karmaşık video ekleme süreci, kullanıcıyı yormayan 3 adımlı bir sihirbaza dönüştürüldü.
-*   **Geri Bildirimler:** İşlem başarı/hata durumları, yükleniyor göstergeleri ve Haptic (titreşim) geri bildirimleri ile kullanıcı deneyimi zenginleştirildi.
+
+- **Adım Adım Sihirbaz:** Karmaşık video ekleme süreci, kullanıcıyı yormayan 3 adımlı bir sihirbaza dönüştürüldü.
+- **Geri Bildirimler:** İşlem başarı/hata durumları, yükleniyor göstergeleri ve Haptic (titreşim) geri bildirimleri ile kullanıcı deneyimi zenginleştirildi.
 
 ### 4. Doğrulama (Validation)
-*   **Zod Entegrasyonu:** Kullanıcı hatalarını önlemek için form verileri `Zod` şemaları ile doğrulanıyor. Geçersiz veri girişinde kullanıcıya anlık uyarılar gösteriliyor.
+
+- **Zod Entegrasyonu:** Kullanıcı hatalarını önlemek için form verileri `Zod` şemaları ile doğrulanıyor. Geçersiz veri girişinde kullanıcıya anlık uyarılar gösteriliyor.
 
 ### 5. Uygulama Başlatma (App Initialization)
-*   **Merkezi Loading Yönetimi:** `useAppLoading` custom hook ile uygulama başlatma süreci orkestre edilir. Database initialization, splash screen kontrolü ve hata yönetimi tek bir noktadan yönetilir.
-*   **Güvenlik:** 10 saniyelik timeout mekanizması ile sonsuz loading durumlarının önüne geçilir.
-*   **Kullanıcı Deneyimi:** Uygulama kritik kaynaklar hazır olmadan render edilmez, kullanıcıya her zaman anlamlı geri bildirim sağlanır.
+
+- **Merkezi Loading Yönetimi:** `useAppLoading` custom hook ile uygulama başlatma süreci orkestre edilir. Database initialization, splash screen kontrolü ve hata yönetimi tek bir noktadan yönetilir.
+- **Güvenlik:** 10 saniyelik timeout mekanizması ile sonsuz loading durumlarının önüne geçilir.
+- **Kullanıcı Deneyimi:** Uygulama kritik kaynaklar hazır olmadan render edilmez, kullanıcıya her zaman anlamlı geri bildirim sağlanır.
 
 ---
 
@@ -92,35 +97,39 @@ Proje geliştirilirken vaka çalışmasındaki "Key Considerations" maddelerine 
 Projeyi yerel ortamınızda çalıştırmak için aşağıdaki adımları izleyin:
 
 ### Gereksinimler
-*   Node.js (LTS sürümü önerilir)
-*   iOS Simulator (Mac için) veya Android Emulator
+
+- Node.js (LTS sürümü önerilir)
+- iOS Simulator (Mac için) veya Android Emulator
 
 ### Adımlar
 
 1.  **Depoyu Klonlayın:**
+
     ```bash
     git clone https://github.com/alpertas/VideoDiaryApp.git
     cd VideoDiaryApp
     ```
 
 2.  **Bağımlılıkları Yükleyin:**
+
     ```bash
     npm install
     ```
 
 3.  **Environment Variables Yapılandırması:**
     Proje kök dizininde `.env.example` dosyasını `.env` olarak kopyalayın:
+
     ```bash
     cp .env.example .env
     ```
-    
+
     `.env` dosyasında aşağıdaki değişkenler tanımlanmıştır:
-    
-    | Değişken | Açıklama | Varsayılan Değer |
-    |----------|----------|------------------|
-    | `EXPO_PUBLIC_DB_NAME` | SQLite veritabanı dosya adı | `videodiary.db` |
-    | `EXPO_PUBLIC_MAX_VIDEO_DURATION` | Maksimum video süresi (ms) | `5000` (5 saniye) |
-    
+
+    | Değişken                         | Açıklama                    | Varsayılan Değer  |
+    | -------------------------------- | --------------------------- | ----------------- |
+    | `EXPO_PUBLIC_DB_NAME`            | SQLite veritabanı dosya adı | `videodiary.db`   |
+    | `EXPO_PUBLIC_MAX_VIDEO_DURATION` | Maksimum video süresi (ms)  | `5000` (5 saniye) |
+
     **Önemli Notlar:**
     - Expo'da environment variables'ın client tarafında kullanılabilmesi için `EXPO_PUBLIC_` prefix'i gereklidir.
     - `.env` dosyası `.gitignore` içinde yer aldığı için repository'ye commit edilmez.
@@ -128,13 +137,14 @@ Projeyi yerel ortamınızda çalıştırmak için aşağıdaki adımları izleyi
 
 4.  **Native Build Oluşturun (Prebuild):**
     Proje native modüller (`expo-sqlite`, video işleme) içerdiği için prebuild işlemi gereklidir.
+
     ```bash
     npx expo prebuild
     ```
 
 5.  **Uygulamayı Başlatın:**
-    *   **iOS:** `npx expo run:ios`
-    *   **Android:** `npx expo run:android`
+    - **iOS:** `npx expo run:ios`
+    - **Android:** `npx expo run:android`
 
 > ⚠️ **Not:** Video işleme ve SQLite özellikleri Expo Go uygulamasında tam performanslı çalışmayabilir veya desteklenmeyebilir. Bu nedenle `run:ios` veya `run:android` komutları ile Development Build kullanılması önerilir.
 
@@ -192,12 +202,14 @@ VideoDiary/
 Uygulama **Türkçe** ve **İngilizce** dillerini desteklemektedir. Dil seçimi cihazın sistem diline göre otomatik yapılır.
 
 ### Özellikler:
+
 - ✅ **JSON Tabanlı Çeviriler:** Tüm metinler `lib/translations/` klasöründe ayrı JSON dosyalarında tutulur
 - ✅ **Validation Mesajları:** Zod validation hata mesajları da i18n ile yerelleştirilmiştir
 - ✅ **Fallback Desteği:** Bir çeviri eksikse otomatik olarak İngilizce kullanılır
 - ✅ **Bakım Kolaylığı:** Çevirileri güncellemek için sadece JSON dosyalarını düzenlemek yeterlidir
 
 ### Kullanım Örneği:
+
 ```typescript
 import i18n from '@/lib/i18n';
 
@@ -221,22 +233,26 @@ Bu proje, modern yazılım geliştirme pratiklerinin bir parçası olarak **AI d
 Proje boyunca Google Gemini AI aşağıdaki alanlarda aktif olarak kullanılmıştır:
 
 #### 🎯 Kod Kalitesi ve Mimari
+
 - **TypeScript Type Safety:** Tüm component'ler ve hook'lar için generic type tanımlamaları
 - **Best Practices:** React Hook patterns, custom hook design, error handling strategies
 - **Code Review:** `any` type kullanımı gibi anti-pattern'lerin tespit edilip düzeltilmesi
 - **Refactoring:** FlashList v2 migration, fire-and-forget pattern'den kontrollu loading'e geçiş
 
 #### 📚 Dokümantasyon
+
 - **Inline Comments:** Karmaşık logic'ler için açıklayıcı JSDoc yorumları
 - **README Structure:** Kapsamlı ve yapılandırılmış proje dokümantasyonu
 - **Translation Files:** JSON tabanlı i18n sistemi ve dokümantasyonu
 
 #### 🏗️ Mimari Kararlar
+
 - **Loading State Management:** Merkezi loading orchestration sistemi tasarımı
 - **Error Boundary Pattern:** React Error Boundary implementation strategy
 - **Separation of Concerns:** i18n metinlerinin JSON'a ayrılması
 
 #### 🔍 Problem Solving
+
 - **Debugging:** TypeScript type errors, FlashList v2 API değişiklikleri
 - **Performance:** Splash screen timing, database initialization optimization
 - **UX Improvements:** Loading states, error messaging, timeout mechanisms
@@ -262,6 +278,7 @@ Bu bölüm, projede alınan önemli teknik kararların **neden** alındığını
 **Karar:** `FlatList` yerine `@shopify/flash-list` kullanımı
 
 **Sebep:**
+
 - Video listeleri potansiyel olarak çok uzun olabilir (yüzlerce video)
 - FlashList, FlatList'e göre %10x daha iyi scroll performance sağlar
 - Blank area'ları minimize eder (better viewport recycling)
@@ -276,6 +293,7 @@ Bu bölüm, projede alınan önemli teknik kararların **neden** alındığını
 **Karar:** Çeviri metinlerini koddan ayrı JSON dosyalarına taşıma
 
 **Sebep:**
+
 1. **Separation of Concerns:** Content vs. Code
 2. **Scalability:** Yeni dil eklemek sadece yeni JSON dosyası gerektirir
 3. **Non-developer Friendly:** Çevirmenler kod görmeden çalışabilir
@@ -291,6 +309,7 @@ Bu bölüm, projede alınan önemli teknik kararların **neden** alındığını
 **Karar:** `useAppLoading` hook ile centralized loading orchestration
 
 **Sebep:**
+
 1. **Race Conditions:** Database init tamamlanmadan query atılması engellenir
 2. **User Feedback:** Splash screen kontrolü ile professional startup UX
 3. **Error Handling:** Initialization failure'ları yakalanıp gösterilir
@@ -298,6 +317,7 @@ Bu bölüm, projede alınan önemli teknik kararların **neden** alındığını
 5. **Single Source of Truth:** Loading logic tek bir noktada, test edilebilir
 
 **Alternatif:** Fire-and-forget database init - Kabul edilmedi çünkü:
+
 - Race condition riski var
 - Error handling yetersiz
 - User'a feedback yok
@@ -309,6 +329,7 @@ Bu bölüm, projede alınan önemli teknik kararların **neden** alındığını
 **Karar:** `strict: true` ile TypeScript configuration
 
 **Sebep:**
+
 - Runtime'da type-related bug'ların önüne geçmek
 - Refactoring güvenliği (rename, move operations)
 - IDE intelliSense desteği
@@ -323,6 +344,7 @@ Bu bölüm, projede alınan önemli teknik kararların **neden** alındığını
 **Karar:** Video metadata için `expo-sqlite` kullanımı
 
 **Sebep:**
+
 1. **Relational Data:** Video-thumbnail ilişkisi ve metadata queries
 2. **Performance:** AsyncStorage'a göre çok daha hızlı read/write
 3. **Querying:** SQL ile complex filtering/sorting yapılabilir
@@ -330,6 +352,7 @@ Bu bölüm, projede alınan önemli teknik kararların **neden** alındığını
 5. **Future-proof:** Pagination, search gibi advanced features için hazır
 
 **Alternatif:** AsyncStorage - Kabul edilmedi çünkü:
+
 - Key-value store, relational data için uygun değil
 - Query capabilities yok
 - Performance issues with large datasets
@@ -341,6 +364,7 @@ Bu bölüm, projede alınan önemli teknik kararların **neden** alındığını
 **Karar:** `.env` dosyası ile configuration management
 
 **Sebep:**
+
 1. **Environment-specific Config:** Dev, staging, prod farklı değerler
 2. **Security:** Sensitive data (API keys) commit edilmez
 3. **Flexibility:** DB name, API endpoints runtime'da değiştirilebilir
@@ -355,6 +379,7 @@ Bu bölüm, projede alınan önemli teknik kararların **neden** alındığını
 **Karar:** Business logic'i custom hooks'a, UI'ı focused component'lere taşıma
 
 **Sebep:**
+
 1. **Separation of Concerns:** Logic vs. Presentation tamamen ayrıldı
 2. **Testability:** Hook'lar UI'dan bağımsız test edilebilir
 3. **Reusability:** `useVideoList`, `useAddVideoWizard` farklı ekranlarda kullanılabilir
@@ -362,11 +387,13 @@ Bu bölüm, projede alınan önemli teknik kararların **neden** alındığını
 5. **Scalability:** Yeni özellik eklemek daha kolay (hook extend et, component ekle)
 
 **Implementation:**
+
 - `app/add.tsx`: 320 satır → 60 satır ("Dumb View" pattern)
 - `hooks/useAddVideoWizard.ts`: Tüm wizard business logic
 - `components/wizard/*`: Her adım için focused component
 
 **Alternatif:** Monolithic screen components - Kabul edilmedi çünkü:
+
 - 300+ satırlık dosyalar maintainability problemleri
 - Logic ve UI iç içe, test edilemez
 - Kod tekrarı ve coupling issues
@@ -378,12 +405,14 @@ Bu bölüm, projede alınan önemli teknik kararların **neden** alındığını
 **Karar:** Image picker açılırken button'a loading state ekleme
 
 **Sebep:**
+
 1. **UX Problem:** Native bridge lag'i kullanıcıya freeze gibi görünüyor
 2. **Perceived Performance:** Spinner ile kullanıcı işlem olduğunu anlıyor
 3. **State Management:** Ephemeral UI state → `useState` (Zustand'a gerek yok)
 4. **Critical 100ms Delay:** React render cycle'ın UI'ı güncellemesi için native bridge block olmadan önce kısa delay
 
 **Implementation:**
+
 ```typescript
 const [isPicking, setIsPicking] = useState(false);
 
@@ -405,6 +434,7 @@ const handleSelectVideo = async () => {
 ## 🎓 Geliştirici Notları
 
 ### Öğrenilen Pattern'ler
+
 - Custom hook design (separation of logic from UI)
 - Splash screen orchestration
 - Error boundary best practices
@@ -412,7 +442,9 @@ const handleSelectVideo = async () => {
 - FlashList optimization techniques
 
 ### Future Improvements
+
 Bu proje için potansiyel iyileştirmeler:
+
 - [ ] Sentry/Crashlytics entegrasyonu
 - [ ] Unit test coverage (Jest + React Native Testing Library)
 - [ ] E2E tests (Detox)

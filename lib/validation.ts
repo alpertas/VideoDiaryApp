@@ -34,15 +34,18 @@ export const videoSelectionSchema = z.object({
  * Validation schema for video trim range.
  * Ensures the trim range is exactly 5 seconds.
  */
-export const videoTrimSchema = z.object({
-  startTime: z.number().min(0, { message: i18n.t('validation.startTimePositive') }),
-  endTime: z.number().min(0, { message: i18n.t('validation.endTimePositive') }),
-}).refine(
-  (data) => data.endTime > data.startTime,
-  { message: i18n.t('validation.endTimeAfterStart') }
-).refine(
-  (data) => Math.abs((data.endTime - data.startTime) - 5000) < 100,
-  { message: i18n.t('validation.trimRangeExact') }
-);
-
-
+export const videoTrimSchema = z
+  .object({
+    startTime: z
+      .number()
+      .min(0, { message: i18n.t('validation.startTimePositive') }),
+    endTime: z
+      .number()
+      .min(0, { message: i18n.t('validation.endTimePositive') }),
+  })
+  .refine((data) => data.endTime > data.startTime, {
+    message: i18n.t('validation.endTimeAfterStart'),
+  })
+  .refine((data) => Math.abs(data.endTime - data.startTime - 5000) < 100, {
+    message: i18n.t('validation.trimRangeExact'),
+  });

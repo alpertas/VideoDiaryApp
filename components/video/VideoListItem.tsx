@@ -1,7 +1,7 @@
-import { Video } from "@/types";
-import { Image } from "expo-image";
-import React from "react";
-import { Pressable, Text, View } from "react-native";
+import { Video } from '@/types';
+import { Image } from 'expo-image';
+import React from 'react';
+import { Pressable, Text, View } from 'react-native';
 
 interface VideoListItemProps {
   video: Video;
@@ -14,10 +14,10 @@ interface VideoListItemProps {
  * Displays video name, description, and formatted date.
  */
 export function VideoListItem({ video, onPress }: VideoListItemProps) {
-  const formattedDate = new Date(video.createdAt).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
+  const formattedDate = new Date(video.createdAt).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
   });
 
   return (

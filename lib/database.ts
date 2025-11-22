@@ -12,7 +12,7 @@ let db: SQLite.SQLiteDatabase | null = null;
 export async function initDatabase(): Promise<void> {
   try {
     db = await SQLite.openDatabaseAsync(DATABASE_NAME);
-    
+
     // Create videos table with thumbnailUri for list performance
     await db.execAsync(`
       CREATE TABLE IF NOT EXISTS videos (
@@ -24,7 +24,7 @@ export async function initDatabase(): Promise<void> {
         createdAt INTEGER NOT NULL
       );
     `);
-    
+
     console.log('Database initialized successfully');
   } catch (error) {
     console.error('Failed to initialize database:', error);
@@ -36,10 +36,10 @@ export async function initDatabase(): Promise<void> {
  * Get all videos ordered by creation date with optional filtering.
  */
 export async function getAllVideos(
-  searchQuery: string = "",
-  sortOrder: "asc" | "desc" = "desc"
+  searchQuery: string = '',
+  sortOrder: 'asc' | 'desc' = 'desc'
 ): Promise<Video[]> {
-  if (!db) throw new Error("Database not initialized");
+  if (!db) throw new Error('Database not initialized');
 
   try {
     const query = `
@@ -51,7 +51,7 @@ export async function getAllVideos(
     const result = await db.getAllAsync<Video>(query, [`%${searchQuery}%`]);
     return result;
   } catch (error) {
-    console.error("Failed to fetch videos:", error);
+    console.error('Failed to fetch videos:', error);
     throw error;
   }
 }
@@ -61,7 +61,7 @@ export async function getAllVideos(
  */
 export async function getVideoById(id: number): Promise<Video | null> {
   if (!db) throw new Error('Database not initialized');
-  
+
   try {
     const result = await db.getFirstAsync<Video>(
       'SELECT * FROM videos WHERE id = ?',
@@ -80,7 +80,7 @@ export async function getVideoById(id: number): Promise<Video | null> {
  */
 export async function insertVideo(data: VideoInput): Promise<number> {
   if (!db) throw new Error('Database not initialized');
-  
+
   try {
     const result = await db.runAsync(
       'INSERT INTO videos (uri, thumbnailUri, name, description, createdAt) VALUES (?, ?, ?, ?, ?)',
@@ -101,7 +101,7 @@ export async function updateVideo(
   data: { name: string; description: string }
 ): Promise<boolean> {
   if (!db) throw new Error('Database not initialized');
-  
+
   try {
     const result = await db.runAsync(
       'UPDATE videos SET name = ?, description = ? WHERE id = ?',
@@ -121,16 +121,12 @@ export async function updateVideo(
  */
 export async function deleteVideo(id: number): Promise<boolean> {
   if (!db) throw new Error('Database not initialized');
-  
+
   try {
-    const result = await db.runAsync(
-      'DELETE FROM videos WHERE id = ?',
-      [id]
-    );
+    const result = await db.runAsync('DELETE FROM videos WHERE id = ?', [id]);
     return result.changes > 0;
   } catch (error) {
     console.error('Failed to delete video:', error);
     throw error;
   }
 }
-

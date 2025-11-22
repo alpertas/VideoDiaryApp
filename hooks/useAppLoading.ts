@@ -13,7 +13,7 @@ interface UseAppLoadingResult {
 /**
  * Custom hook to manage app loading state.
  * Orchestrates database initialization and splash screen visibility.
- * 
+ *
  * @returns {UseAppLoadingResult} - Loading state and error if any
  */
 export function useAppLoading(): UseAppLoadingResult {
@@ -25,7 +25,7 @@ export function useAppLoading(): UseAppLoadingResult {
       try {
         // Initialize database
         await initDatabase();
-        
+
         // Mark app as ready
         setIsReady(true);
       } catch (e) {

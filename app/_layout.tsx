@@ -1,14 +1,18 @@
-import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { LoadingScreen } from "@/components/LoadingScreen";
-import { useAppLoading } from "@/hooks/useAppLoading";
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
-import "react-native-reanimated";
-import "../global.css";
+import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { LoadingScreen } from '@/components/LoadingScreen';
+import { useAppLoading } from '@/hooks/useAppLoading';
+import {
+  DarkTheme,
+  DefaultTheme,
+  ThemeProvider,
+} from '@react-navigation/native';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Stack } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import 'react-native-reanimated';
+import '../global.css';
 
-import { useColorScheme } from "@/hooks/useColorScheme";
+import { useColorScheme } from '@/hooks/useColorScheme';
 
 // Create QueryClient instance with default options
 const queryClient = new QueryClient({
@@ -32,40 +36,42 @@ export default function RootLayout() {
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+        <ThemeProvider
+          value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
+        >
           <Stack>
             <Stack.Screen
               name="index"
               options={{
-                title: "Video Diary",
+                title: 'Video Diary',
                 headerShown: true,
               }}
             />
             <Stack.Screen
               name="add"
               options={{
-                presentation: "modal",
-                title: "Add Video",
+                presentation: 'modal',
+                title: 'Add Video',
                 headerShown: true,
               }}
             />
             <Stack.Screen
               name="videos/[id]"
               options={{
-                title: "Video Details",
+                title: 'Video Details',
                 headerShown: true,
               }}
             />
             <Stack.Screen
               name="edit/[id]"
               options={{
-                presentation: "modal",
-                title: "Edit Video",
+                presentation: 'modal',
+                title: 'Edit Video',
                 headerShown: true,
               }}
             />
           </Stack>
-          <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
+          <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
         </ThemeProvider>
       </QueryClientProvider>
     </ErrorBoundary>

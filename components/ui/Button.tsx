@@ -1,14 +1,14 @@
-import React from "react";
+import React from 'react';
 import {
   ActivityIndicator,
   Pressable,
   PressableProps,
   Text,
-} from "react-native";
+} from 'react-native';
 
-type ButtonVariant = "primary" | "secondary" | "danger";
+type ButtonVariant = 'primary' | 'secondary' | 'danger';
 
-interface ButtonProps extends Omit<PressableProps, "children"> {
+interface ButtonProps extends Omit<PressableProps, 'children'> {
   title: string;
   variant?: ButtonVariant;
   loading?: boolean;
@@ -21,7 +21,7 @@ interface ButtonProps extends Omit<PressableProps, "children"> {
  */
 export function Button({
   title,
-  variant = "primary",
+  variant = 'primary',
   loading = false,
   disabled = false,
   onPress,
@@ -29,16 +29,16 @@ export function Button({
 }: ButtonProps) {
   const isDisabled = disabled || loading;
 
-  const baseClasses = "px-6 py-3 rounded-lg items-center justify-center";
+  const baseClasses = 'px-6 py-3 rounded-lg items-center justify-center';
   const variantClasses = {
-    primary: "bg-blue-600 active:bg-blue-700",
-    secondary: "bg-gray-600 active:bg-gray-700",
-    danger: "bg-red-600 active:bg-red-700",
+    primary: 'bg-blue-600 active:bg-blue-700',
+    secondary: 'bg-gray-600 active:bg-gray-700',
+    danger: 'bg-red-600 active:bg-red-700',
   };
-  const disabledClasses = "opacity-50";
+  const disabledClasses = 'opacity-50';
 
   const buttonClasses = `${baseClasses} ${variantClasses[variant]} ${
-    isDisabled ? disabledClasses : ""
+    isDisabled ? disabledClasses : ''
   }`;
 
   return (
@@ -57,4 +57,3 @@ export function Button({
     </Pressable>
   );
 }
-

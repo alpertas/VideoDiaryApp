@@ -1,8 +1,8 @@
-import i18n from "@/lib/i18n";
-import { useFilterStore } from "@/store/filter-store";
-import { Ionicons } from "@expo/vector-icons";
-import React, { useEffect, useState } from "react";
-import { Pressable, TextInput, View } from "react-native";
+import i18n from '@/lib/i18n';
+import { useFilterStore } from '@/store/filter-store';
+import { Ionicons } from '@expo/vector-icons';
+import React, { useEffect, useState } from 'react';
+import { Pressable, TextInput, View } from 'react-native';
 
 /**
  * SearchBar component with internal debounce logic.
@@ -29,8 +29,8 @@ export function SearchBar() {
   }, [localQuery, setSearchQuery, searchQuery]);
 
   const handleClear = () => {
-    setLocalQuery("");
-    setSearchQuery(""); // Clear immediately on explicit action
+    setLocalQuery('');
+    setSearchQuery(''); // Clear immediately on explicit action
   };
 
   return (
@@ -38,7 +38,7 @@ export function SearchBar() {
       <Ionicons name="search" size={20} color="#9CA3AF" />
       <TextInput
         className="flex-1 py-3 px-2 text-gray-900 dark:text-white"
-        placeholder={i18n.t("main.searchPlaceholder")}
+        placeholder={i18n.t('main.searchPlaceholder')}
         placeholderTextColor="#9CA3AF"
         value={localQuery}
         onChangeText={setLocalQuery}

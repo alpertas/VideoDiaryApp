@@ -1,7 +1,7 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { useEffect } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import React, { useEffect } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import {
   ActivityIndicator,
   Alert,
@@ -11,15 +11,15 @@ import {
   Text,
   TextInput,
   View,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Button } from "@/components/ui/Button";
-import { useUpdateVideoMutation, useVideoQuery } from "@/lib/queries";
+import { Button } from '@/components/ui/Button';
+import { useUpdateVideoMutation, useVideoQuery } from '@/lib/queries';
 import {
   videoMetadataSchema,
   type VideoMetadataFormData,
-} from "@/lib/validation";
+} from '@/lib/validation';
 
 /**
  * EditVideoScreen allows updating video metadata (name and description).
@@ -39,8 +39,8 @@ export default function EditVideoScreen() {
   } = useForm<VideoMetadataFormData>({
     resolver: zodResolver(videoMetadataSchema),
     defaultValues: {
-      name: "",
-      description: "",
+      name: '',
+      description: '',
     },
   });
 
@@ -49,7 +49,7 @@ export default function EditVideoScreen() {
     if (video) {
       reset({
         name: video.name,
-        description: video.description || "",
+        description: video.description || '',
       });
     }
   }, [video, reset]);
@@ -59,17 +59,17 @@ export default function EditVideoScreen() {
       {
         id: Number(id),
         name: formData.name,
-        description: formData.description || "",
+        description: formData.description || '',
       },
       {
         onSuccess: () => {
-          Alert.alert("Success", "Video updated successfully!");
+          Alert.alert('Success', 'Video updated successfully!');
           router.back();
         },
         onError: (error) => {
           Alert.alert(
-            "Error",
-            error instanceof Error ? error.message : "Failed to update video"
+            'Error',
+            error instanceof Error ? error.message : 'Failed to update video'
           );
         },
       }
@@ -106,7 +106,7 @@ export default function EditVideoScreen() {
     <SafeAreaView className="flex-1 bg-white dark:bg-gray-900">
       <KeyboardAvoidingView
         className="flex-1"
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={100}
       >
         <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
@@ -192,4 +192,3 @@ export default function EditVideoScreen() {
     </SafeAreaView>
   );
 }
-

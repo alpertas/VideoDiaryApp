@@ -1,13 +1,13 @@
-import { Ionicons } from "@expo/vector-icons";
-import { VideoView, useVideoPlayer } from "expo-video";
-import React, { useEffect, useState } from "react";
-import { Pressable, View } from "react-native";
+import { Ionicons } from '@expo/vector-icons';
+import { VideoView, useVideoPlayer } from 'expo-video';
+import React, { useEffect, useState } from 'react';
+import { Pressable, View } from 'react-native';
 
 interface VideoPlayerProps {
   uri: string;
   autoPlay?: boolean;
   className?: string;
-  contentFit?: "contain" | "cover" | "fill";
+  contentFit?: 'contain' | 'cover' | 'fill';
   startTime?: number;
   endTime?: number;
 }
@@ -20,8 +20,8 @@ interface VideoPlayerProps {
 export function VideoPlayer({
   uri,
   autoPlay = false,
-  className = "",
-  contentFit = "cover",
+  className = '',
+  contentFit = 'cover',
   startTime,
   endTime,
 }: VideoPlayerProps) {
@@ -39,7 +39,7 @@ export function VideoPlayer({
         player.play();
       }
     } catch (error) {
-      console.error("VideoPlayer error:", error);
+      console.error('VideoPlayer error:', error);
     }
   });
 
@@ -47,7 +47,7 @@ export function VideoPlayer({
   useEffect(() => {
     if (player) {
       const playingSubscription = player.addListener(
-        "playingChange",
+        'playingChange',
         (newState) => {
           setIsPlaying(newState.isPlaying);
         }
@@ -113,18 +113,18 @@ export function VideoPlayer({
 
         // Check if video is at end (within 100ms tolerance)
         const isAtEnd = Math.abs(currentTimeMs - durationMs) < 100;
-        
+
         // Check if video is at segment end (if trimming is active)
-        const isAtSegmentEnd = 
-          endTime !== undefined && 
-          startTime !== undefined && 
+        const isAtSegmentEnd =
+          endTime !== undefined &&
+          startTime !== undefined &&
           Math.abs(currentTimeMs - endTime) < 100;
 
         if (isAtEnd || isAtSegmentEnd) {
           const seekTime = startTime !== undefined ? startTime / 1000 : 0;
           player.currentTime = seekTime;
         }
-        
+
         player.play();
       }
     }
@@ -133,11 +133,11 @@ export function VideoPlayer({
   return (
     <View
       className={`relative ${className}`}
-      style={{ backgroundColor: "#000" }}
+      style={{ backgroundColor: '#000' }}
     >
       <VideoView
         player={player}
-        style={{ width: "100%", height: "100%" }}
+        style={{ width: '100%', height: '100%' }}
         contentFit={contentFit}
         nativeControls={false}
       />

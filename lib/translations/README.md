@@ -12,18 +12,23 @@ Bu klasör Video Diary uygulamasının çoklu dil desteği için çeviri dosyala
 Çeviri dosyaları aşağıdaki kategorilere ayrılmıştır:
 
 ### 1. `common`
+
 Ortak UI elemanları (butonlar, mesajlar, vb.)
 
 ### 2. `validation`
+
 Form validasyon hata mesajları (Zod şemaları için)
 
 ### 3. `main`
+
 Ana ekran metinleri
 
 ### 4. `add`
+
 Video ekleme ekranı metinleri
 
 ### 5. `details`
+
 Video detay ekranı metinleri
 
 ## Yeni Çeviri Ekleme

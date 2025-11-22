@@ -1,10 +1,10 @@
-import { Ionicons } from "@expo/vector-icons";
-import { FlashList, type FlashListRef } from "@shopify/flash-list";
-import { router } from "expo-router";
-import React, { useCallback, useEffect, useRef } from "react"; // useCallback eklendi
-import { Pressable, Text, View } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import Swipeable from "react-native-gesture-handler/Swipeable";
+import { Ionicons } from '@expo/vector-icons';
+import { FlashList, type FlashListRef } from '@shopify/flash-list';
+import { router } from 'expo-router';
+import React, { useCallback, useEffect, useRef } from 'react'; // useCallback eklendi
+import { Pressable, Text, View } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
 import Reanimated, {
   Easing,
   FadeInDown,
@@ -12,15 +12,15 @@ import Reanimated, {
   useSharedValue,
   withRepeat,
   withTiming,
-} from "react-native-reanimated";
-import { SafeAreaView } from "react-native-safe-area-context";
+} from 'react-native-reanimated';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { SearchBar } from "@/components/ui/SearchBar";
-import { VideoListItem } from "@/components/video/VideoListItem";
-import { useVideoList } from "@/hooks/useVideoList";
-import i18n from "@/lib/i18n";
-import { useFilterStore } from "@/store/filter-store";
-import type { Video } from "@/types";
+import { SearchBar } from '@/components/ui/SearchBar';
+import { VideoListItem } from '@/components/video/VideoListItem';
+import { useVideoList } from '@/hooks/useVideoList';
+import i18n from '@/lib/i18n';
+import { useFilterStore } from '@/store/filter-store';
+import type { Video } from '@/types';
 
 /**
  * MainScreen (Final Optimized Version)
@@ -60,18 +60,20 @@ export default function MainScreen() {
       <Pressable
         onPress={() => handleEdit(video.id)}
         className="bg-blue-500 justify-center items-center w-24 rounded-l-lg active:bg-blue-600"
-        style={{ height: "100%" }}
+        style={{ height: '100%' }}
       >
         <Ionicons name="pencil" size={20} color="white" />
-        <Text className="text-white text-xs mt-1">{i18n.t("common.edit")}</Text>
+        <Text className="text-white text-xs mt-1">{i18n.t('common.edit')}</Text>
       </Pressable>
       <Pressable
         onPress={() => handleDelete(video)}
         className="bg-red-500 justify-center items-center w-24 rounded-r-lg active:bg-red-600"
-        style={{ height: "100%" }}
+        style={{ height: '100%' }}
       >
         <Ionicons name="trash" size={20} color="white" />
-        <Text className="text-white text-xs mt-1">{i18n.t("common.delete")}</Text>
+        <Text className="text-white text-xs mt-1">
+          {i18n.t('common.delete')}
+        </Text>
       </Pressable>
     </View>
   );
@@ -103,7 +105,7 @@ export default function MainScreen() {
     return (
       <SafeAreaView className="flex-1 bg-white dark:bg-gray-900 justify-center items-center">
         <Text className="text-gray-500 dark:text-gray-400">
-          {i18n.t("common.loading")}
+          {i18n.t('common.loading')}
         </Text>
       </SafeAreaView>
     );
@@ -121,16 +123,16 @@ export default function MainScreen() {
             style={{ marginBottom: 16 }}
           />
           <Text className="text-2xl font-bold text-gray-900 dark:text-white mb-2 text-center">
-            {i18n.t("main.emptyTitle")}
+            {i18n.t('main.emptyTitle')}
           </Text>
           <Text className="text-gray-600 dark:text-gray-400 text-center mb-8">
-            {i18n.t("main.emptySubtitle")}
+            {i18n.t('main.emptySubtitle')}
           </Text>
           <Pressable
             onPress={handleAddVideo}
             className="bg-blue-600 px-8 py-4 rounded-2xl active:opacity-70"
             style={{
-              shadowColor: "#3B82F6",
+              shadowColor: '#3B82F6',
               shadowOffset: { width: 0, height: 4 },
               shadowOpacity: 0.3,
               shadowRadius: 8,
@@ -140,7 +142,7 @@ export default function MainScreen() {
             <View className="flex-row items-center gap-2">
               <Ionicons name="add-circle-outline" size={28} color="white" />
               <Text className="text-white font-bold text-lg">
-                {i18n.t("main.addFirst")}
+                {i18n.t('main.addFirst')}
               </Text>
             </View>
           </Pressable>
@@ -162,10 +164,10 @@ export default function MainScreen() {
               className="bg-white dark:bg-gray-800 px-4 rounded-lg flex-row gap-2 justify-center items-center border border-gray-200 dark:border-gray-700 active:bg-gray-100 dark:active:bg-gray-700 h-12"
             >
               <Text className="text-gray-700 dark:text-gray-300 font-medium">
-                {i18n.t("main.sort")}
+                {i18n.t('main.sort')}
               </Text>
               <Ionicons
-                name={sortOrder === "desc" ? "arrow-down" : "arrow-up"}
+                name={sortOrder === 'desc' ? 'arrow-down' : 'arrow-up'}
                 size={16}
                 color="#3B82F6"
               />
@@ -179,31 +181,31 @@ export default function MainScreen() {
           <View className="flex-1 items-center justify-center px-8 pb-20">
             <Ionicons name="search-outline" size={64} color="#9CA3AF" />
             <Text className="text-gray-500 dark:text-gray-400 text-center mt-4 text-lg">
-              {i18n.t("main.noSearchResults", { query: searchQuery })}
+              {i18n.t('main.noSearchResults', { query: searchQuery })}
             </Text>
           </View>
         ) : (
           // Video List
-            <FlashList<Video> // ✅ Generic Type added to prevent TS errors
+          <FlashList<Video> // ✅ Generic Type added to prevent TS errors
             ref={flashListRef}
             data={videos}
             renderItem={renderItem}
             keyExtractor={(item) => item.id.toString()}
-              // @ts-ignore: FlashList types definition glitch - this prop is required and exists in runtime
-              estimatedItemSize={100} // ✅ Critical for performance
-              contentContainerStyle={{
-                paddingTop: 12,
-                paddingBottom: 100,
-                paddingHorizontal: 16,
-              }}
-            />
+            // @ts-ignore: FlashList types definition glitch - this prop is required and exists in runtime
+            estimatedItemSize={100} // ✅ Critical for performance
+            contentContainerStyle={{
+              paddingTop: 12,
+              paddingBottom: 100,
+              paddingHorizontal: 16,
+            }}
+          />
         )}
 
         {/* Floating Action Button */}
         <Reanimated.View
           style={[
             {
-              position: "absolute",
+              position: 'absolute',
               bottom: 32,
               right: 32,
             },
@@ -214,7 +216,7 @@ export default function MainScreen() {
             onPress={handleAddVideo}
             className="bg-blue-600 w-16 h-16 rounded-full items-center justify-center shadow-lg active:bg-blue-700"
             style={{
-              shadowColor: "#2563EB",
+              shadowColor: '#2563EB',
               shadowOffset: { width: 0, height: 4 },
               shadowOpacity: 0.3,
               shadowRadius: 8,

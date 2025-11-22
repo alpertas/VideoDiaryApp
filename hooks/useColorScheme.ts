@@ -7,12 +7,12 @@ import { useColorScheme as useRNColorScheme } from 'react-native';
  * - If themeMode is 'light' or 'dark', returns that value
  */
 export function useColorScheme() {
-    const systemColorScheme = useRNColorScheme();
-    const { themeMode } = useUIStore();
+  const systemColorScheme = useRNColorScheme();
+  const { themeMode } = useUIStore();
 
-    if (themeMode === 'system') {
-        return systemColorScheme ?? 'light';
-    }
+  if (themeMode === 'system') {
+    return systemColorScheme ?? 'light';
+  }
 
-    return themeMode;
+  return themeMode;
 }

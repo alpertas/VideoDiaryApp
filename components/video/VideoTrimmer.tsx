@@ -1,6 +1,6 @@
-import React, { useCallback, useState } from "react";
-import { Dimensions, Text, View } from "react-native";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import React, { useCallback, useState } from 'react';
+import { Dimensions, Text, View } from 'react-native';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   runOnJS,
   useAnimatedReaction,
@@ -8,8 +8,8 @@ import Animated, {
   useDerivedValue,
   useSharedValue,
   withTiming,
-} from "react-native-reanimated";
-import { VideoPlayer } from "./VideoPlayer";
+} from 'react-native-reanimated';
+import { VideoPlayer } from './VideoPlayer';
 
 interface VideoTrimmerProps {
   videoUri: string;
@@ -17,7 +17,7 @@ interface VideoTrimmerProps {
   onTrimChange: (startTime: number, endTime: number) => void;
 }
 
-const SCREEN_WIDTH = Dimensions.get("window").width;
+const SCREEN_WIDTH = Dimensions.get('window').width;
 const TIMELINE_PADDING = 45;
 const TIMELINE_WIDTH = SCREEN_WIDTH - TIMELINE_PADDING * 2;
 const HANDLE_WIDTH = 25;
@@ -59,7 +59,7 @@ export function VideoTrimmer({
 
   // Convert position to time
   const positionToTime = (position: number): number => {
-    "worklet";
+    'worklet';
     return (
       ((position - HANDLE_WIDTH / 2) / USABLE_TIMELINE_WIDTH) * videoDuration
     );
@@ -230,7 +230,7 @@ export function VideoTrimmer({
 
         <View
           className="relative h-16 bg-gray-200 dark:bg-gray-700 rounded-lg"
-          style={{ overflow: "visible" }}
+          style={{ overflow: 'visible' }}
         >
           {/* Selected Region Highlight */}
           <GestureDetector gesture={centerPanGesture}>
@@ -238,10 +238,10 @@ export function VideoTrimmer({
               style={[
                 selectionStyle,
                 {
-                  position: "absolute",
+                  position: 'absolute',
                   top: 0,
                   bottom: 0,
-                  backgroundColor: "rgba(59, 130, 246, 0.3)",
+                  backgroundColor: 'rgba(59, 130, 246, 0.3)',
                 },
               ]}
             />
@@ -253,17 +253,17 @@ export function VideoTrimmer({
               style={[
                 startHandleStyle,
                 {
-                  position: "absolute",
+                  position: 'absolute',
                   left: 0,
                   top: -1,
                   bottom: -1,
                   width: HANDLE_WIDTH,
-                  backgroundColor: "#3B82F6",
+                  backgroundColor: '#3B82F6',
                   borderRadius: 8,
-                  alignItems: "center",
-                  justifyContent: "center",
+                  alignItems: 'center',
+                  justifyContent: 'center',
                   zIndex: 10,
-                  shadowColor: "#000",
+                  shadowColor: '#000',
                   shadowOffset: { width: 0, height: 2 },
                   shadowOpacity: 0.3,
                   shadowRadius: 4,
@@ -275,7 +275,7 @@ export function VideoTrimmer({
                 style={{
                   width: 3,
                   height: 35,
-                  backgroundColor: "#FFFFFF",
+                  backgroundColor: '#FFFFFF',
                   borderRadius: 1,
                 }}
               />
@@ -288,17 +288,17 @@ export function VideoTrimmer({
               style={[
                 endHandleStyle,
                 {
-                  position: "absolute",
+                  position: 'absolute',
                   left: 0,
                   top: -1,
                   bottom: -1,
                   width: HANDLE_WIDTH,
-                  backgroundColor: "#3B82F6",
+                  backgroundColor: '#3B82F6',
                   borderRadius: 8,
-                  alignItems: "center",
-                  justifyContent: "center",
+                  alignItems: 'center',
+                  justifyContent: 'center',
                   zIndex: 10,
-                  shadowColor: "#000",
+                  shadowColor: '#000',
                   shadowOffset: { width: 0, height: 2 },
                   shadowOpacity: 0.3,
                   shadowRadius: 4,
@@ -310,7 +310,7 @@ export function VideoTrimmer({
                 style={{
                   width: 3,
                   height: 35,
-                  backgroundColor: "#FFFFFF",
+                  backgroundColor: '#FFFFFF',
                   borderRadius: 1,
                 }}
               />

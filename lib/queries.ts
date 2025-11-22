@@ -1,23 +1,23 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { File, Paths } from "expo-file-system";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { File, Paths } from 'expo-file-system';
 import {
   VideoThumbnailsResult,
   getThumbnailAsync,
-} from "expo-video-thumbnails";
+} from 'expo-video-thumbnails';
 
-import type { Video, VideoCreationData } from "@/types";
-import * as db from "./database";
+import type { Video, VideoCreationData } from '@/types';
+import * as db from './database';
 // Use mock for Expo Go, real implementation needs development build
 
 /**
  * Query keys for cache management.
  */
 export const queryKeys = {
-  videos: ["videos"] as const,
-  video: (id: number) => ["videos", id] as const,
+  videos: ['videos'] as const,
+  video: (id: number) => ['videos', id] as const,
 };
 
-import { useFilterStore } from "@/store/filter-store";
+import { useFilterStore } from '@/store/filter-store';
 
 /**
  * Fetch all videos from SQLite.
@@ -63,7 +63,7 @@ export function useAddVideoMutation() {
   return useMutation({
     mutationFn: async (data: VideoCreationData) => {
       // Step 1: Trim the video to selected segment
-      console.log("✂️ Trimming video:", {
+      console.log('✂️ Trimming video:', {
         source: data.sourceUri,
         start: `${(data.startTime / 1000).toFixed(1)}s`,
         end: `${(data.endTime / 1000).toFixed(1)}s`,
@@ -77,24 +77,24 @@ export function useAddVideoMutation() {
       let trimResult;
       try {
         // Dynamically import to avoid crash in Expo Go where native module is missing
-        const { trimVideo } = await import("expo-trim-video");
+        const { trimVideo } = await import('expo-trim-video');
         trimResult = await trimVideo({
           uri: data.sourceUri,
           start: startSeconds,
           end: endSeconds,
         });
       } catch (error) {
-        console.error("Trim video error:", error);
+        console.error('Trim video error:', error);
         throw new Error(
           "Video trimming requires a development build. Please run 'npx expo run:ios' or 'npx expo run:android'."
         );
       }
 
       if (!trimResult || !trimResult.uri) {
-        throw new Error("Video trimming failed");
+        throw new Error('Video trimming failed');
       }
 
-      console.log("✅ Video trimmed:", trimResult.uri);
+      console.log('✅ Video trimmed:', trimResult.uri);
 
       // Step 2: Generate thumbnail from the trimmed video
       let thumbnailResult: VideoThumbnailsResult;
@@ -103,7 +103,7 @@ export function useAddVideoMutation() {
           time: 0, // First frame
         });
       } catch {
-        throw new Error("Thumbnail generation failed");
+        throw new Error('Thumbnail generation failed');
       }
 
       // Step 3: Move files from CacheDirectory to DocumentDirectory for persistence
@@ -162,7 +162,7 @@ export function useUpdateVideoMutation() {
       });
 
       if (!success) {
-        throw new Error("Video not found or update failed");
+        throw new Error('Video not found or update failed');
       }
 
       return params.id;
@@ -194,7 +194,7 @@ export function useDeleteVideoMutation() {
         if (videoFile.exists) videoFile.delete();
         if (thumbnailFile.exists) thumbnailFile.delete();
       } catch {
-        console.warn("Failed to delete video files");
+        console.warn('Failed to delete video files');
         // Continue with database deletion even if file deletion fails
       }
 
@@ -202,7 +202,7 @@ export function useDeleteVideoMutation() {
       const success = await db.deleteVideo(video.id);
 
       if (!success) {
-        throw new Error("Video not found or deletion failed");
+        throw new Error('Video not found or deletion failed');
       }
 
       return video.id;
@@ -213,4 +213,3 @@ export function useDeleteVideoMutation() {
     },
   });
 }
-

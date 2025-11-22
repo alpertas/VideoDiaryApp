@@ -1,18 +1,18 @@
-import { Ionicons } from "@expo/vector-icons";
-import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
-import React from "react";
+import { Ionicons } from '@expo/vector-icons';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
+import React from 'react';
 import {
   ActivityIndicator,
   Pressable,
   ScrollView,
   Text,
   View,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { VideoPlayer } from "@/components/video/VideoPlayer";
-import i18n from "@/lib/i18n";
-import { useVideoQuery } from "@/lib/queries";
+import { VideoPlayer } from '@/components/video/VideoPlayer';
+import i18n from '@/lib/i18n';
+import { useVideoQuery } from '@/lib/queries';
 
 /**
  * VideoDetailsScreen displays full video player with metadata.
@@ -50,26 +50,26 @@ export default function VideoDetailsScreen() {
         <View className="flex-1 items-center justify-center px-8">
           <Ionicons name="alert-circle-outline" size={80} color="#EF4444" />
           <Text className="text-xl font-bold text-gray-900 dark:text-white mt-4">
-            {i18n.t("details.notFoundTitle")}
+            {i18n.t('details.notFoundTitle')}
           </Text>
           <Text className="text-gray-600 dark:text-gray-400 text-center mt-2">
-            {i18n.t("details.notFoundMsg")}
+            {i18n.t('details.notFoundMsg')}
           </Text>
         </View>
       </SafeAreaView>
     );
   }
 
-  const formattedDate = new Date(video.createdAt).toLocaleDateString("en-US", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
+  const formattedDate = new Date(video.createdAt).toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
   });
 
-  const formattedTime = new Date(video.createdAt).toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
+  const formattedTime = new Date(video.createdAt).toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
   });
 
   return (
@@ -97,7 +97,9 @@ export default function VideoDetailsScreen() {
             >
               <View className="flex-row items-center">
                 <Ionicons name="pencil" size={16} color="white" />
-                <Text className="text-white font-semibold ml-2">{i18n.t("common.edit")}</Text>
+                <Text className="text-white font-semibold ml-2">
+                  {i18n.t('common.edit')}
+                </Text>
               </View>
             </Pressable>
           </View>
@@ -119,7 +121,7 @@ export default function VideoDetailsScreen() {
           {video.description && (
             <View>
               <Text className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                {i18n.t("add.descLabel")}
+                {i18n.t('add.descLabel')}
               </Text>
               <Text className="text-gray-700 dark:text-gray-300 leading-6">
                 {video.description}
@@ -129,7 +131,7 @@ export default function VideoDetailsScreen() {
 
           {!video.description && (
             <Text className="text-gray-500 dark:text-gray-500 italic">
-              {i18n.t("details.noDesc")}
+              {i18n.t('details.noDesc')}
             </Text>
           )}
         </View>

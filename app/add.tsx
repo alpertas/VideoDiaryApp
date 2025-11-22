@@ -1,10 +1,10 @@
-import React from "react";
+import React from 'react';
 
-import { Step1SelectVideo } from "@/components/wizard/Step1SelectVideo";
-import { Step2TrimVideo } from "@/components/wizard/Step2TrimVideo";
-import { Step3MetadataForm } from "@/components/wizard/Step3MetadataForm";
-import { WizardLayout } from "@/components/wizard/WizardLayout";
-import { useAddVideoWizard } from "@/hooks/useAddVideoWizard";
+import { Step1SelectVideo } from '@/components/wizard/Step1SelectVideo';
+import { Step2TrimVideo } from '@/components/wizard/Step2TrimVideo';
+import { Step3MetadataForm } from '@/components/wizard/Step3MetadataForm';
+import { WizardLayout } from '@/components/wizard/WizardLayout';
+import { useAddVideoWizard } from '@/hooks/useAddVideoWizard';
 
 /**
  * AddVideoScreen (Refactored)

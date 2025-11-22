@@ -1,10 +1,10 @@
-import { Ionicons } from "@expo/vector-icons";
-import * as Updates from "expo-updates";
-import React, { Component, ErrorInfo, ReactNode } from "react";
-import { Pressable, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from '@expo/vector-icons';
+import * as Updates from 'expo-updates';
+import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { Pressable, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import i18n from "@/lib/i18n";
+import i18n from '@/lib/i18n';
 
 interface Props {
   children: ReactNode;
@@ -30,7 +30,7 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error("Uncaught error:", error, errorInfo);
+    console.error('Uncaught error:', error, errorInfo);
   }
 
   private handleRestart = async () => {
@@ -49,10 +49,10 @@ export class ErrorBoundary extends Component<Props, State> {
           <View className="flex-1 items-center justify-center p-6">
             <Ionicons name="warning-outline" size={80} color="#EF4444" />
             <Text className="text-2xl font-bold text-gray-800 dark:text-white mt-4 mb-2">
-              {i18n.t("errorBoundary.title")}
+              {i18n.t('errorBoundary.title')}
             </Text>
             <Text className="text-base text-gray-500 dark:text-gray-400 text-center mb-8">
-              {i18n.t("errorBoundary.subtitle")}
+              {i18n.t('errorBoundary.subtitle')}
             </Text>
             {this.state.error && (
               <View className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg mb-8 w-full">
@@ -66,7 +66,7 @@ export class ErrorBoundary extends Component<Props, State> {
               className="bg-blue-500 px-8 py-4 rounded-xl active:bg-blue-600"
             >
               <Text className="text-white text-base font-semibold">
-                {i18n.t("errorBoundary.restart")}
+                {i18n.t('errorBoundary.restart')}
               </Text>
             </Pressable>
           </View>

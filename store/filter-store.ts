@@ -16,6 +16,7 @@ export const useFilterStore = create<FilterState>((set) => ({
   sortOrder: 'desc',
   setSearchQuery: (query) => set({ searchQuery: query }),
   setSortOrder: (order) => set({ sortOrder: order }),
-  toggleSortOrder: () => set((state) => ({ sortOrder: state.sortOrder === 'asc' ? 'desc' : 'asc' })),
+  toggleSortOrder: () =>
+    set((state) => ({ sortOrder: state.sortOrder === 'asc' ? 'desc' : 'asc' })),
   resetFilters: () => set({ searchQuery: '', sortOrder: 'desc' }),
 }));

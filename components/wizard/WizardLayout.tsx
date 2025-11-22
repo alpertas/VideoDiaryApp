@@ -1,11 +1,11 @@
-import React from "react";
-import { ScrollView, Text, View } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { SafeAreaView } from "react-native-safe-area-context";
+import React from 'react';
+import { ScrollView, Text, View } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Button } from "@/components/ui/Button";
-import type { WizardStep } from "@/hooks/useAddVideoWizard";
-import i18n from "@/lib/i18n";
+import { Button } from '@/components/ui/Button';
+import type { WizardStep } from '@/hooks/useAddVideoWizard';
+import i18n from '@/lib/i18n';
 
 interface WizardLayoutProps {
   currentStep: WizardStep;
@@ -35,10 +35,10 @@ export function WizardLayout({
                 <View
                   className={`w-8 h-8 rounded-full items-center justify-center ${
                     step === currentStep
-                      ? "bg-blue-600"
+                      ? 'bg-blue-600'
                       : step < currentStep
-                        ? "bg-green-600"
-                        : "bg-gray-300 dark:bg-gray-700"
+                        ? 'bg-green-600'
+                        : 'bg-gray-300 dark:bg-gray-700'
                   }`}
                 >
                   <Text className="text-white font-semibold">{step}</Text>
@@ -47,8 +47,8 @@ export function WizardLayout({
                   <View
                     className={`w-12 h-1 mx-2 ${
                       step < currentStep
-                        ? "bg-green-600"
-                        : "bg-gray-300 dark:bg-gray-700"
+                        ? 'bg-green-600'
+                        : 'bg-gray-300 dark:bg-gray-700'
                     }`}
                   />
                 )}
@@ -65,7 +65,9 @@ export function WizardLayout({
               <View className="flex-1">
                 <Button
                   title={
-                    currentStep === 1 ? i18n.t("common.cancel") : i18n.t("common.back")
+                    currentStep === 1
+                      ? i18n.t('common.cancel')
+                      : i18n.t('common.back')
                   }
                   onPress={onBack}
                   variant="secondary"
@@ -75,14 +77,14 @@ export function WizardLayout({
               <View className="flex-1">
                 {currentStep === 2 && onNext && (
                   <Button
-                    title={i18n.t("common.next")}
+                    title={i18n.t('common.next')}
                     onPress={onNext}
                     variant="primary"
                   />
                 )}
                 {currentStep === 3 && onSave && (
                   <Button
-                    title={i18n.t("common.save")}
+                    title={i18n.t('common.save')}
                     onPress={onSave}
                     variant="primary"
                     loading={isPending}
