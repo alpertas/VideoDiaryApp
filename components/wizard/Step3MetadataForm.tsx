@@ -1,12 +1,8 @@
 import React from 'react';
 import { Control, Controller, FieldErrors } from 'react-hook-form';
-import {
-  KeyboardAvoidingView,
-  Platform,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import { Text, TextInput, View } from 'react-native';
+
+import { KeyboardSafeView } from '@/components/ui/KeyboardSafeView';
 
 import i18n from '@/lib/i18n';
 import type { VideoMetadataFormData } from '@/lib/validation';
@@ -18,11 +14,7 @@ interface Step3MetadataFormProps {
 
 export function Step3MetadataForm({ control, errors }: Step3MetadataFormProps) {
   return (
-    <KeyboardAvoidingView
-      className="flex-1"
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={100}
-    >
+    <KeyboardSafeView>
       <View className="flex-1 py-4">
         <Text className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
           {i18n.t('add.step3Title')}
@@ -80,6 +72,6 @@ export function Step3MetadataForm({ control, errors }: Step3MetadataFormProps) {
           />
         </View>
       </View>
-    </KeyboardAvoidingView>
+    </KeyboardSafeView>
   );
 }

@@ -1,15 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
-import {
-  ActivityIndicator,
-  Pressable,
-  ScrollView,
-  Text,
-  View,
-} from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Loader } from '@/components/ui/Loader';
 import { VideoPlayer } from '@/components/video/VideoPlayer';
 import i18n from '@/lib/i18n';
 import { useVideoQuery } from '@/lib/queries';
@@ -36,10 +31,8 @@ export default function VideoDetailsScreen() {
 
   if (isLoading) {
     return (
-      <SafeAreaView className="flex-1 bg-white dark:bg-gray-900">
-        <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#3B82F6" />
-        </View>
+      <SafeAreaView className="flex-1">
+        <Loader />
       </SafeAreaView>
     );
   }

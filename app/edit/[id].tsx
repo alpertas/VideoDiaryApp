@@ -2,19 +2,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import {
-  ActivityIndicator,
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import { Alert, ScrollView, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button } from '@/components/ui/Button';
+import { KeyboardSafeView } from '@/components/ui/KeyboardSafeView';
+import { Loader } from '@/components/ui/Loader';
 import { useUpdateVideoMutation, useVideoQuery } from '@/lib/queries';
 import {
   videoMetadataSchema,
@@ -82,10 +75,8 @@ export default function EditVideoScreen() {
 
   if (isLoading) {
     return (
-      <SafeAreaView className="flex-1 bg-white dark:bg-gray-900">
-        <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#3B82F6" />
-        </View>
+      <SafeAreaView className="flex-1">
+        <Loader />
       </SafeAreaView>
     );
   }
@@ -104,11 +95,7 @@ export default function EditVideoScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-white dark:bg-gray-900">
-      <KeyboardAvoidingView
-        className="flex-1"
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={100}
-      >
+      <KeyboardSafeView>
         <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
           <View className="p-6">
             <Text className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
@@ -188,7 +175,7 @@ export default function EditVideoScreen() {
             </View>
           </View>
         </ScrollView>
-      </KeyboardAvoidingView>
+      </KeyboardSafeView>
     </SafeAreaView>
   );
 }

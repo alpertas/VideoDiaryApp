@@ -1,13 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import { FlashList, type FlashListRef } from '@shopify/flash-list';
 import { router } from 'expo-router';
-import React, { useCallback, useEffect, useRef } from 'react'; // useCallback eklendi
+import React, { useCallback, useEffect, useRef } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import Swipeable from 'react-native-gesture-handler/Swipeable';
 import Reanimated, {
   Easing,
-  FadeInDown,
   useAnimatedStyle,
   useSharedValue,
   withRepeat,
@@ -15,6 +13,7 @@ import Reanimated, {
 } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Loader } from '@/components/ui/Loader';
 import { SearchBar } from '@/components/ui/SearchBar';
 import { VideoListItem } from '@/components/video/VideoListItem';
 import { useVideoList } from '@/hooks/useVideoList';
@@ -54,59 +53,26 @@ export default function MainScreen() {
     opacity: fabOpacity.value,
   }));
 
-  // Actions for Swipeable (Memoized not strictly necessary here as it's passed to renderItem, but good practice)
-  const renderRightActions = (video: Video) => (
-    <View className="flex-row">
-      <Pressable
-        onPress={() => handleEdit(video.id)}
-        className="bg-blue-500 justify-center items-center w-24 rounded-l-lg active:bg-blue-600"
-        style={{ height: '100%' }}
-      >
-        <Ionicons name="pencil" size={20} color="white" />
-        <Text className="text-white text-xs mt-1">{i18n.t('common.edit')}</Text>
-      </Pressable>
-      <Pressable
-        onPress={() => handleDelete(video)}
-        className="bg-red-500 justify-center items-center w-24 rounded-r-lg active:bg-red-600"
-        style={{ height: '100%' }}
-      >
-        <Ionicons name="trash" size={20} color="white" />
-        <Text className="text-white text-xs mt-1">
-          {i18n.t('common.delete')}
-        </Text>
-      </Pressable>
-    </View>
-  );
+  // Memoized renderItem for FlashList performance
 
-  // ✅ OPTIMIZATION: renderItem is now memoized with useCallback.
-  // This prevents function recreation on every render, improving FlashList performance.
   const renderItem = useCallback(
     ({ item, index }: { item: Video; index: number }) => (
-      <Reanimated.View
-        entering={FadeInDown.delay(index * 50)}
-        style={{ marginBottom: 16 }}
-      >
-        <Swipeable
-          renderRightActions={() => renderRightActions(item)}
-          overshootRight={false}
-        >
-          <VideoListItem
-            video={item}
-            onPress={() => router.push(`/videos/${item.id}`)}
-          />
-        </Swipeable>
-      </Reanimated.View>
+      <VideoListItem
+        video={item}
+        onPress={() => router.push(`/videos/${item.id}`)}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+        index={index}
+      />
     ),
-    [handleEdit, handleDelete] // Dependencies: Only recreate if these change
+    [handleEdit, handleDelete]
   );
 
   // Loading State
   if (isLoading) {
     return (
-      <SafeAreaView className="flex-1 bg-white dark:bg-gray-900 justify-center items-center">
-        <Text className="text-gray-500 dark:text-gray-400">
-          {i18n.t('common.loading')}
-        </Text>
+      <SafeAreaView className="flex-1">
+        <Loader message={i18n.t('common.loading')} />
       </SafeAreaView>
     );
   }
