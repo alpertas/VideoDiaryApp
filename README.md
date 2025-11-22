@@ -99,8 +99,8 @@ Projeyi yerel ortamınızda çalıştırmak için aşağıdaki adımları izleyi
 
 1.  **Depoyu Klonlayın:**
     ```bash
-    git clone <repo-url>
-    cd VideoDiary
+    git clone https://github.com/alpertas/VideoDiaryApp.git
+    cd VideoDiaryApp
     ```
 
 2.  **Bağımlılıkları Yükleyin:**
