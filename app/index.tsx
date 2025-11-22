@@ -1,158 +1,108 @@
 import { Ionicons } from "@expo/vector-icons";
 import { FlashList, type FlashListRef } from "@shopify/flash-list";
-import * as Haptics from "expo-haptics";
-import { useRouter } from "expo-router";
-import React, { useEffect } from "react";
-import { ActivityIndicator, Alert, Pressable, Text, View } from "react-native";
+import { router } from "expo-router";
+import React from "react";
 import {
-  GestureHandlerRootView,
-  Swipeable,
-} from "react-native-gesture-handler";
-import Animated, {
+  Pressable,
+  Text,
+  View
+} from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import Swipeable from "react-native-gesture-handler/Swipeable";
+import Reanimated, {
+  Easing,
   FadeInDown,
   useAnimatedStyle,
   useSharedValue,
   withRepeat,
-  withSequence,
   withTiming,
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { SearchBar } from "@/components/ui/SearchBar";
 import { VideoListItem } from "@/components/video/VideoListItem";
+import { useVideoList } from "@/hooks/useVideoList";
 import i18n from "@/lib/i18n";
-import { useDeleteVideoMutation, useVideosQuery } from "@/lib/queries";
 import { useFilterStore } from "@/store/filter-store";
 import type { Video } from "@/types";
 
 /**
- * MainScreen displays all video diaries in a performant FlashList.
- * Features: Loading states, empty state, swipe actions, and navigation.
+ * MainScreen (Refactored)
+ * A "Dumb View" that displays the video list using `useVideoList`.
  */
 export default function MainScreen() {
-  const router = useRouter();
-  const { data: videos, isLoading } = useVideosQuery();
-  const deleteVideoMutation = useDeleteVideoMutation();
+  const {
+    videos,
+    isLoading,
+    searchQuery,
+    handleEdit,
+    handleDelete,
+    handleAddVideo,
+  } = useVideoList();
 
+  const { sortOrder, toggleSortOrder } = useFilterStore();
   const flashListRef = React.useRef<FlashListRef<Video>>(null);
 
-  // FAB pulsating animation
-  const fabScale = useSharedValue(1);
+  // FAB pulsating animation using Reanimated v2+ API
+  const fabOpacity = useSharedValue(1);
 
-  useEffect(() => {
-    fabScale.value = withRepeat(
-      withSequence(
-        withTiming(1.1, { duration: 2500 }),
-        withTiming(1, { duration: 2500 })
-      ),
+  React.useEffect(() => {
+    fabOpacity.value = withRepeat(
+      withTiming(0.8, { duration: 1000, easing: Easing.inOut(Easing.ease) }),
       -1,
-      false
+      true
     );
-  }, []);
-
-  // Scroll to top when new videos are added
-  useEffect(() => {
-    if (videos && videos.length > 0) {
-      flashListRef.current?.scrollToOffset({ offset: 0, animated: true });
-    }
-  }, [videos]);
+  }, [fabOpacity]);
 
   const fabAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: fabScale.value }],
+    opacity: fabOpacity.value,
   }));
 
-  const handleVideoPress = (videoId: number) => {
-    router.push(`/videos/${videoId}`);
-  };
-
-  const handleAddVideo = () => {
-    router.push("/add");
-  };
-
-  const handleDelete = (video: Video) => {
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
-    Alert.alert(
-      i18n.t("main.deleteConfirmTitle"),
-      i18n.t("main.deleteConfirmMessage", { name: video.name }),
-      [
-        { text: i18n.t("common.cancel"), style: "cancel" },
-        {
-          text: i18n.t("common.delete"),
-          style: "destructive",
-          onPress: () => {
-            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-            deleteVideoMutation.mutate(video, {
-              onSuccess: () => {
-                Alert.alert(i18n.t("common.success"), i18n.t("main.deleteSuccess"));
-              },
-              onError: () => {
-                Alert.alert(i18n.t("common.error"), i18n.t("main.deleteError"));
-              },
-            });
-          },
-        },
-      ]
-    );
-  };
-
-  const handleEdit = (videoId: number) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.push(`/edit/${videoId}`);
-  };
-
-  const { searchQuery, sortOrder, setSearchQuery, toggleSortOrder } = useFilterStore();
-
-  const renderRightActions = (video: Video) => {
-    return (
-      <View className="flex-row">
-        <Pressable
-          onPress={() => handleEdit(video.id)}
-          className="bg-blue-500 justify-center items-center w-24 rounded-l-lg active:bg-blue-600"
-          style={{ height: "100%" }}
-        >
-          <Ionicons name="pencil" size={20} color="white" />
-          <Text className="text-white text-xs font-medium mt-1">{i18n.t("common.edit")}</Text>
-        </Pressable>
-        <Pressable
-          onPress={() => handleDelete(video)}
-          className="bg-red-500 justify-center items-center w-24 rounded-r-lg active:bg-red-600"
-          style={{ height: "100%" }}
-        >
-          <Ionicons name="trash" size={20} color="white" />
-          <Text className="text-white text-xs font-medium mt-1">{i18n.t("common.delete")}</Text>
-        </Pressable>
-      </View>
-    );
-  };
+  const renderRightActions = (video: Video) => (
+    <View className="flex-row">
+      <Pressable
+        onPress={() => handleEdit(video.id)}
+        className="bg-blue-500 justify-center items-center w-24 rounded-l-lg active:bg-blue-600"
+        style={{ height: "100%" }}
+      >
+        <Ionicons name="pencil" size={20} color="white" />
+        <Text className="text-white text-xs mt-1">{i18n.t("common.edit")}</Text>
+      </Pressable>
+      <Pressable
+        onPress={() => handleDelete(video)}
+        className="bg-red-500 justify-center items-center w-24 rounded-r-lg active:bg-red-600"
+        style={{ height: "100%" }}
+      >
+        <Ionicons name="trash" size={20} color="white" />
+        <Text className="text-white text-xs mt-1">{i18n.t("common.delete")}</Text>
+      </Pressable>
+    </View>
+  );
 
   const renderItem = ({ item, index }: { item: Video; index: number }) => (
-    <Animated.View
+    <Reanimated.View
       entering={FadeInDown.delay(index * 50)}
       style={{ marginBottom: 16 }}
     >
       <Swipeable
         renderRightActions={() => renderRightActions(item)}
         overshootRight={false}
-        friction={1.5}
-        rightThreshold={60}
       >
-        <VideoListItem video={item} onPress={() => handleVideoPress(item.id)} />
+        <VideoListItem
+          video={item}
+          onPress={() => router.push(`/videos/${item.id}`)}
+        />
       </Swipeable>
-    </Animated.View>
+    </Reanimated.View>
   );
-
-
 
   // Loading State
   if (isLoading) {
     return (
-      <SafeAreaView className="flex-1 bg-white dark:bg-gray-900">
-        <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#3B82F6" />
-          <Text className="text-gray-600 dark:text-gray-400 mt-4">
-            {i18n.t("common.loading")}
-          </Text>
-        </View>
+      <SafeAreaView className="flex-1 bg-white dark:bg-gray-900 justify-center items-center">
+        <Text className="text-gray-500 dark:text-gray-400">
+          {i18n.t("common.loading")}
+        </Text>
       </SafeAreaView>
     );
   }
@@ -242,21 +192,21 @@ export default function MainScreen() {
         )}
 
         {/* Floating Action Button */}
-        <Animated.View
+        <Reanimated.View
           style={[
-            fabAnimatedStyle,
             {
               position: "absolute",
-              bottom: 24,
-              right: 24,
+              bottom: 32,
+              right: 32,
             },
+            fabAnimatedStyle,
           ]}
         >
           <Pressable
             onPress={handleAddVideo}
-            className="bg-blue-600 w-14 h-14 rounded-full items-center justify-center active:scale-95"
+            className="bg-blue-600 w-16 h-16 rounded-full items-center justify-center shadow-lg active:bg-blue-700"
             style={{
-              shadowColor: "#000",
+              shadowColor: "#2563EB",
               shadowOffset: { width: 0, height: 4 },
               shadowOpacity: 0.3,
               shadowRadius: 8,
@@ -265,7 +215,7 @@ export default function MainScreen() {
           >
             <Ionicons name="add" size={32} color="white" />
           </Pressable>
-        </Animated.View>
+        </Reanimated.View>
       </SafeAreaView>
     </GestureHandlerRootView>
   );
