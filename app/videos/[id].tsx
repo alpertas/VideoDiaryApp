@@ -53,17 +53,23 @@ export default function VideoDetailsScreen() {
     );
   }
 
-  const formattedDate = new Date(video.createdAt).toLocaleDateString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
+  const formattedDate = new Date(video.createdAt).toLocaleDateString(
+    i18n.locale,
+    {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    }
+  );
 
-  const formattedTime = new Date(video.createdAt).toLocaleTimeString('en-US', {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+  const formattedTime = new Date(video.createdAt).toLocaleTimeString(
+    i18n.locale,
+    {
+      hour: '2-digit',
+      minute: '2-digit',
+    }
+  );
 
   return (
     <SafeAreaView className="flex-1 bg-white dark:bg-gray-900">

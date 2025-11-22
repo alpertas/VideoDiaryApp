@@ -29,11 +29,14 @@ export function VideoListItem({
   onDelete,
   index = 0,
 }: VideoListItemProps) {
-  const formattedDate = new Date(video.createdAt).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
+  const formattedDate = new Date(video.createdAt).toLocaleDateString(
+    i18n.locale,
+    {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    }
+  );
 
   const renderRightActions = () => (
     <View className="flex-row">
